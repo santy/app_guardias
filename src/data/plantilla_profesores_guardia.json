@@ -1,0 +1,207 @@
+{
+  "LUNES": {
+    "1": [
+      { "nombre": "Álvarez Martín, Carlos", "email": "carlos.alvarez@instituto.edu", "guardias": 4 },
+      { "nombre": "Benítez Sánchez, Laura", "email": "laura.benitez@instituto.edu", "guardias": 5 },
+      { "nombre": "Castro Ruiz, Miguel", "email": "miguel.castro@instituto.edu", "guardias": 3 }
+    ],
+    "2": [
+      { "nombre": "Delgado Vega, Ana", "email": "ana.delgado@instituto.edu", "guardias": 4 },
+      { "nombre": "Espinosa López, David", "email": "david.espinosa@instituto.edu", "guardias": 4 },
+      { "nombre": "Fernández Mora, Elena", "email": "elena.fernandez@instituto.edu", "guardias": 3 },
+      { "nombre": "González Herrera, Pablo", "email": "pablo.gonzalez@instituto.edu", "guardias": 3 }
+    ],
+    "3": [
+      { "nombre": "Hernández Silva, Rosa", "email": "rosa.hernandez@instituto.edu", "guardias": 4 },
+      { "nombre": "Iglesias Navarro, Javier", "email": "javier.iglesias@instituto.edu", "guardias": 3 },
+      { "nombre": "Jiménez Torres, María", "email": "maria.jimenez@instituto.edu", "guardias": 3 },
+      { "nombre": "López Blanco, José", "email": "jose.lopez@instituto.edu", "guardias": 3 }
+    ],
+    "4": [
+      { "nombre": "Martín Campos, Lucía", "email": "lucia.martin@instituto.edu", "guardias": 2 },
+      { "nombre": "Núñez Prieto, Antonio", "email": "antonio.nunez@instituto.edu", "guardias": 3 },
+      { "nombre": "Ortega Ramos, Carmen", "email": "carmen.ortega@instituto.edu", "guardias": 4 },
+      { "nombre": "Pérez Díaz, Luis", "email": "luis.perez@instituto.edu", "guardias": 1 },
+      { "nombre": "Ramírez Vidal, Sofía", "email": "sofia.ramirez@instituto.edu", "guardias": 2 }
+    ],
+    "5": [
+      { "nombre": "Sánchez Moreno, Diego", "email": "diego.sanchez@instituto.edu", "guardias": 2 },
+      { "nombre": "Torres García, Isabel", "email": "isabel.torres@instituto.edu", "guardias": 2 },
+      { "nombre": "Vargas Ruiz, Fernando", "email": "fernando.vargas@instituto.edu", "guardias": 2 },
+      { "nombre": "Vázquez López, Pilar", "email": "pilar.vazquez@instituto.edu", "guardias": 2 },
+      { "nombre": "Zamora Castro, Raúl", "email": "raul.zamora@instituto.edu", "guardias": 2 }
+    ],
+    "6": [
+      { "nombre": "Aguilar Soto, Patricia", "email": "patricia.aguilar@instituto.edu", "guardias": 3 },
+      { "nombre": "Blanco González, Laura", "email": "laura.blanco@instituto.edu", "guardias": 3 },
+      { "nombre": "Cortés Martín, Ana", "email": "ana.cortes@instituto.edu", "guardias": 3 }
+    ]
+  },
+
+  "MARTES": {
+    "1": [
+      { "nombre": "Álvarez Martín, Carlos", "email": "carlos.alvarez@instituto.edu", "guardias": 5 },
+      { "nombre": "Benítez Sánchez, Laura", "email": "laura.benitez@instituto.edu", "guardias": 4 },
+      { "nombre": "Castro Ruiz, Miguel", "email": "miguel.castro@instituto.edu", "guardias": 3 },
+      { "nombre": "Delgado Vega, Ana", "email": "ana.delgado@instituto.edu", "guardias": 3 }
+    ],
+    "2": [
+      { "nombre": "Espinosa López, David", "email": "david.espinosa@instituto.edu", "guardias": 4 },
+      { "nombre": "Fernández Mora, Elena", "email": "elena.fernandez@instituto.edu", "guardias": 3 },
+      { "nombre": "González Herrera, Pablo", "email": "pablo.gonzalez@instituto.edu", "guardias": 3 },
+      { "nombre": "Hernández Silva, Rosa", "email": "rosa.hernandez@instituto.edu", "guardias": 4 },
+      { "nombre": "Iglesias Navarro, Javier", "email": "javier.iglesias@instituto.edu", "guardias": 3 }
+    ],
+    "3": [
+      { "nombre": "Jiménez Torres, María", "email": "maria.jimenez@instituto.edu", "guardias": 3 },
+      { "nombre": "López Blanco, José", "email": "jose.lopez@instituto.edu", "guardias": 2 },
+      { "nombre": "Martín Campos, Lucía", "email": "lucia.martin@instituto.edu", "guardias": 4 },
+      { "nombre": "Núñez Prieto, Antonio", "email": "antonio.nunez@instituto.edu", "guardias": 2 },
+      { "nombre": "Ortega Ramos, Carmen", "email": "carmen.ortega@instituto.edu", "guardias": 2 },
+      { "nombre": "Pérez Díaz, Luis", "email": "luis.perez@instituto.edu", "guardias": 0 }
+    ],
+    "4": [
+      { "nombre": "Ramírez Vidal, Sofía", "email": "sofia.ramirez@instituto.edu", "guardias": 3 },
+      { "nombre": "Sánchez Moreno, Diego", "email": "diego.sanchez@instituto.edu", "guardias": 5 },
+      { "nombre": "Torres García, Isabel", "email": "isabel.torres@instituto.edu", "guardias": 5 },
+      { "nombre": "Vargas Ruiz, Fernando", "email": "fernando.vargas@instituto.edu", "guardias": 4 },
+      { "nombre": "Vázquez López, Pilar", "email": "pilar.vazquez@instituto.edu", "guardias": 8 }
+    ],
+    "5": [
+      { "nombre": "Zamora Castro, Raúl", "email": "raul.zamora@instituto.edu", "guardias": 4 },
+      { "nombre": "Aguilar Soto, Patricia", "email": "patricia.aguilar@instituto.edu", "guardias": 3 },
+      { "nombre": "Blanco González, Laura", "email": "laura.blanco@instituto.edu", "guardias": 4 },
+      { "nombre": "Cortés Martín, Ana", "email": "ana.cortes@instituto.edu", "guardias": 3 },
+      { "nombre": "Álvarez Martín, Carlos", "email": "carlos.alvarez@instituto.edu", "guardias": 5 }
+    ],
+    "6": [
+      { "nombre": "Benítez Sánchez, Laura", "email": "laura.benitez@instituto.edu", "guardias": 4 },
+      { "nombre": "Castro Ruiz, Miguel", "email": "miguel.castro@instituto.edu", "guardias": 4 },
+      { "nombre": "Delgado Vega, Ana", "email": "ana.delgado@instituto.edu", "guardias": 5 }
+    ]
+  },
+
+  "MIÉRCOLES": {
+    "1": [
+      { "nombre": "Espinosa López, David", "email": "david.espinosa@instituto.edu", "guardias": 3 },
+      { "nombre": "Fernández Mora, Elena", "email": "elena.fernandez@instituto.edu", "guardias": 7 },
+      { "nombre": "González Herrera, Pablo", "email": "pablo.gonzalez@instituto.edu", "guardias": 1 },
+      { "nombre": "Hernández Silva, Rosa", "email": "rosa.hernandez@instituto.edu", "guardias": 6 }
+    ],
+    "2": [
+      { "nombre": "Iglesias Navarro, Javier", "email": "javier.iglesias@instituto.edu", "guardias": 1 },
+      { "nombre": "Jiménez Torres, María", "email": "maria.jimenez@instituto.edu", "guardias": 2 },
+      { "nombre": "López Blanco, José", "email": "jose.lopez@instituto.edu", "guardias": 3 },
+      { "nombre": "Martín Campos, Lucía", "email": "lucia.martin@instituto.edu", "guardias": 3 },
+      { "nombre": "Núñez Prieto, Antonio", "email": "antonio.nunez@instituto.edu", "guardias": 3 }
+    ],
+    "3": [
+      { "nombre": "Ortega Ramos, Carmen", "email": "carmen.ortega@instituto.edu", "guardias": 7 },
+      { "nombre": "Pérez Díaz, Luis", "email": "luis.perez@instituto.edu", "guardias": 3 },
+      { "nombre": "Ramírez Vidal, Sofía", "email": "sofia.ramirez@instituto.edu", "guardias": 4 },
+      { "nombre": "Sánchez Moreno, Diego", "email": "diego.sanchez@instituto.edu", "guardias": 3 },
+      { "nombre": "Torres García, Isabel", "email": "isabel.torres@instituto.edu", "guardias": 3 }
+    ],
+    "4": [
+      { "nombre": "Vargas Ruiz, Fernando", "email": "fernando.vargas@instituto.edu", "guardias": 2 },
+      { "nombre": "Vázquez López, Pilar", "email": "pilar.vazquez@instituto.edu", "guardias": 3 },
+      { "nombre": "Zamora Castro, Raúl", "email": "raul.zamora@instituto.edu", "guardias": 3 },
+      { "nombre": "Aguilar Soto, Patricia", "email": "patricia.aguilar@instituto.edu", "guardias": 7 },
+      { "nombre": "Blanco González, Laura", "email": "laura.blanco@instituto.edu", "guardias": 3 },
+      { "nombre": "Cortés Martín, Ana", "email": "ana.cortes@instituto.edu", "guardias": 0 }
+    ],
+    "5": [
+      { "nombre": "Álvarez Martín, Carlos", "email": "carlos.alvarez@instituto.edu", "guardias": 2 },
+      { "nombre": "Benítez Sánchez, Laura", "email": "laura.benitez@instituto.edu", "guardias": 5 },
+      { "nombre": "Castro Ruiz, Miguel", "email": "miguel.castro@instituto.edu", "guardias": 7 },
+      { "nombre": "Delgado Vega, Ana", "email": "ana.delgado@instituto.edu", "guardias": 5 }
+    ],
+    "6": [
+      { "nombre": "Espinosa López, David", "email": "david.espinosa@instituto.edu", "guardias": 4 },
+      { "nombre": "Fernández Mora, Elena", "email": "elena.fernandez@instituto.edu", "guardias": 6 }
+    ]
+  },
+
+  "JUEVES": {
+    "1": [
+      { "nombre": "González Herrera, Pablo", "email": "pablo.gonzalez@instituto.edu", "guardias": 4 },
+      { "nombre": "Hernández Silva, Rosa", "email": "rosa.hernandez@instituto.edu", "guardias": 5 },
+      { "nombre": "Iglesias Navarro, Javier", "email": "javier.iglesias@instituto.edu", "guardias": 6 },
+      { "nombre": "Jiménez Torres, María", "email": "maria.jimenez@instituto.edu", "guardias": 2 },
+      { "nombre": "López Blanco, José", "email": "jose.lopez@instituto.edu", "guardias": 0 }
+    ],
+    "2": [
+      { "nombre": "Martín Campos, Lucía", "email": "lucia.martin@instituto.edu", "guardias": 3 },
+      { "nombre": "Núñez Prieto, Antonio", "email": "antonio.nunez@instituto.edu", "guardias": 3 },
+      { "nombre": "Ortega Ramos, Carmen", "email": "carmen.ortega@instituto.edu", "guardias": 2 },
+      { "nombre": "Pérez Díaz, Luis", "email": "luis.perez@instituto.edu", "guardias": 3 },
+      { "nombre": "Ramírez Vidal, Sofía", "email": "sofia.ramirez@instituto.edu", "guardias": 3 }
+    ],
+    "3": [
+      { "nombre": "Sánchez Moreno, Diego", "email": "diego.sanchez@instituto.edu", "guardias": 3 },
+      { "nombre": "Torres García, Isabel", "email": "isabel.torres@instituto.edu", "guardias": 1 },
+      { "nombre": "Vargas Ruiz, Fernando", "email": "fernando.vargas@instituto.edu", "guardias": 4 },
+      { "nombre": "Vázquez López, Pilar", "email": "pilar.vazquez@instituto.edu", "guardias": 3 },
+      { "nombre": "Zamora Castro, Raúl", "email": "raul.zamora@instituto.edu", "guardias": 4 }
+    ],
+    "4": [
+      { "nombre": "Aguilar Soto, Patricia", "email": "patricia.aguilar@instituto.edu", "guardias": 4 },
+      { "nombre": "Blanco González, Laura", "email": "laura.blanco@instituto.edu", "guardias": 5 },
+      { "nombre": "Cortés Martín, Ana", "email": "ana.cortes@instituto.edu", "guardias": 9 },
+      { "nombre": "Álvarez Martín, Carlos", "email": "carlos.alvarez@instituto.edu", "guardias": 5 },
+      { "nombre": "Benítez Sánchez, Laura", "email": "laura.benitez@instituto.edu", "guardias": 4 }
+    ],
+    "5": [
+      { "nombre": "Castro Ruiz, Miguel", "email": "miguel.castro@instituto.edu", "guardias": 3 },
+      { "nombre": "Delgado Vega, Ana", "email": "ana.delgado@instituto.edu", "guardias": 2 },
+      { "nombre": "Espinosa López, David", "email": "david.espinosa@instituto.edu", "guardias": 2 },
+      { "nombre": "Fernández Mora, Elena", "email": "elena.fernandez@instituto.edu", "guardias": 5 },
+      { "nombre": "González Herrera, Pablo", "email": "pablo.gonzalez@instituto.edu", "guardias": 4 }
+    ],
+    "6": [
+      { "nombre": "Hernández Silva, Rosa", "email": "rosa.hernandez@instituto.edu", "guardias": 4 },
+      { "nombre": "Iglesias Navarro, Javier", "email": "javier.iglesias@instituto.edu", "guardias": 4 },
+      { "nombre": "Jiménez Torres, María", "email": "maria.jimenez@instituto.edu", "guardias": 4 }
+    ]
+  },
+
+  "VIERNES": {
+    "1": [
+      { "nombre": "López Blanco, José", "email": "jose.lopez@instituto.edu", "guardias": 4 },
+      { "nombre": "Martín Campos, Lucía", "email": "lucia.martin@instituto.edu", "guardias": 3 },
+      { "nombre": "Núñez Prieto, Antonio", "email": "antonio.nunez@instituto.edu", "guardias": 2 }
+    ],
+    "2": [
+      { "nombre": "Ortega Ramos, Carmen", "email": "carmen.ortega@instituto.edu", "guardias": 5 },
+      { "nombre": "Pérez Díaz, Luis", "email": "luis.perez@instituto.edu", "guardias": 4 },
+      { "nombre": "Ramírez Vidal, Sofía", "email": "sofia.ramirez@instituto.edu", "guardias": 4 },
+      { "nombre": "Sánchez Moreno, Diego", "email": "diego.sanchez@instituto.edu", "guardias": 4 },
+      { "nombre": "Torres García, Isabel", "email": "isabel.torres@instituto.edu", "guardias": 4 }
+    ],
+    "3": [
+      { "nombre": "Vargas Ruiz, Fernando", "email": "fernando.vargas@instituto.edu", "guardias": 6 },
+      { "nombre": "Vázquez López, Pilar", "email": "pilar.vazquez@instituto.edu", "guardias": 6 },
+      { "nombre": "Zamora Castro, Raúl", "email": "raul.zamora@instituto.edu", "guardias": 4 },
+      { "nombre": "Aguilar Soto, Patricia", "email": "patricia.aguilar@instituto.edu", "guardias": 3 },
+      { "nombre": "Blanco González, Laura", "email": "laura.blanco@instituto.edu", "guardias": 5 }
+    ],
+    "4": [
+      { "nombre": "Cortés Martín, Ana", "email": "ana.cortes@instituto.edu", "guardias": 5 },
+      { "nombre": "Álvarez Martín, Carlos", "email": "carlos.alvarez@instituto.edu", "guardias": 5 },
+      { "nombre": "Benítez Sánchez, Laura", "email": "laura.benitez@instituto.edu", "guardias": 3 },
+      { "nombre": "Castro Ruiz, Miguel", "email": "miguel.castro@instituto.edu", "guardias": 3 },
+      { "nombre": "Delgado Vega, Ana", "email": "ana.delgado@instituto.edu", "guardias": 3 }
+    ],
+    "5": [
+      { "nombre": "Espinosa López, David", "email": "david.espinosa@instituto.edu", "guardias": 6 },
+      { "nombre": "Fernández Mora, Elena", "email": "elena.fernandez@instituto.edu", "guardias": 4 },
+      { "nombre": "González Herrera, Pablo", "email": "pablo.gonzalez@instituto.edu", "guardias": 5 },
+      { "nombre": "Hernández Silva, Rosa", "email": "rosa.hernandez@instituto.edu", "guardias": 5 }
+    ],
+    "6": [
+      { "nombre": "Iglesias Navarro, Javier", "email": "javier.iglesias@instituto.edu", "guardias": 2 },
+      { "nombre": "Jiménez Torres, María", "email": "maria.jimenez@instituto.edu", "guardias": 7 },
+      { "nombre": "López Blanco, José", "email": "jose.lopez@instituto.edu", "guardias": 1 }
+    ]
+  }
+}
