@@ -1,7 +1,7 @@
 // Configuración para diferentes entornos
 export const config = {
   development: {
-    apiUrl: 'http://localhost:3001'
+    apiUrl: 'http://localhost:3002'
   },
   production: {
     // Para futuro uso con AWS

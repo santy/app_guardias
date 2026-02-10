@@ -1,0 +1,170 @@
+[
+  {
+    "PK": "TEACHER#T001",
+    "displayName": "Álvarez Martín, Carlos",
+    "email": "carlos.alvarez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T002",
+    "displayName": "Benítez Sánchez, Laura",
+    "email": "laura.benitez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T003",
+    "displayName": "Castro Ruiz, Miguel",
+    "email": "miguel.castro@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T004",
+    "displayName": "Delgado Vega, Ana",
+    "email": "ana.delgado@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T005",
+    "displayName": "Espinosa López, David",
+    "email": "david.espinosa@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T006",
+    "displayName": "Fernández Mora, Elena",
+    "email": "elena.fernandez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T007",
+    "displayName": "González Herrera, Pablo",
+    "email": "pablo.gonzalez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T008",
+    "displayName": "Hernández Silva, Rosa",
+    "email": "rosa.hernandez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T009",
+    "displayName": "Iglesias Navarro, Javier",
+    "email": "javier.iglesias@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T010",
+    "displayName": "Jiménez Torres, María",
+    "email": "maria.jimenez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T011",
+    "displayName": "López Blanco, José",
+    "email": "jose.lopez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T012",
+    "displayName": "Martín Campos, Lucía",
+    "email": "lucia.martin@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T013",
+    "displayName": "Núñez Prieto, Antonio",
+    "email": "antonio.nunez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T014",
+    "displayName": "Ortega Ramos, Carmen",
+    "email": "carmen.ortega@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T015",
+    "displayName": "Pérez Díaz, Luis",
+    "email": "luis.perez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T016",
+    "displayName": "Ramírez Vidal, Sofía",
+    "email": "sofia.ramirez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T017",
+    "displayName": "Sánchez Moreno, Diego",
+    "email": "diego.sanchez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T018",
+    "displayName": "Torres García, Isabel",
+    "email": "isabel.torres@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T019",
+    "displayName": "Vargas Ruiz, Fernando",
+    "email": "fernando.vargas@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T020",
+    "displayName": "Vázquez López, Pilar",
+    "email": "pilar.vazquez@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T021",
+    "displayName": "Zamora Castro, Raúl",
+    "email": "raul.zamora@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T022",
+    "displayName": "Aguilar Soto, Patricia",
+    "email": "patricia.aguilar@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T023",
+    "displayName": "Blanco González, Laura",
+    "email": "laura.blanco@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  },
+  {
+    "PK": "TEACHER#T024",
+    "displayName": "Cortés Martín, Ana",
+    "email": "ana.cortes@instituto.edu",
+    "active": true,
+    "cognito:groups": ["PROFESOR"]
+  }
+]

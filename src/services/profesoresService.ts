@@ -12,6 +12,8 @@ interface AusenciaRecord {
   comentarios?: string
   asignada: boolean
   profesorAsignado: string | null
+  teacherName?: string
+  profesorAsignadoNombre?: string | null
 }
 
 const getDayFromDate = (dateString: string): string => {
@@ -35,7 +37,7 @@ const transformAusenciasData = (ausenciasArray: AusenciaRecord[]) => {
     const pkParts = record.PK.split('#')
     const date = pkParts[1]
     const slot = pkParts[3].replace(/^0+/, '')
-    const teacher = record.SK.replace('TEACHER#', '')
+    const teacherName = record.teacherName || record.SK.replace('TEACHER#', '')
     const day = getDayFromDate(date)
     
     const weekStart = getWeekStart(date)
@@ -45,11 +47,11 @@ const transformAusenciasData = (ausenciasArray: AusenciaRecord[]) => {
     if (!result[weekStart][day][slot]) result[weekStart][day][slot] = []
     
     result[weekStart][day][slot].push({
-      nombre: teacher,
+      nombre: teacherName,
       aula: record.aula,
       comentarios: record.comentarios,
       asignada: record.asignada,
-      profesorAsignado: record.profesorAsignado
+      profesorAsignado: record.profesorAsignadoNombre || record.profesorAsignado
     })
   })
   
