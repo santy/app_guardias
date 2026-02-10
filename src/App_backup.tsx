@@ -1,30 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './App.css'
 import GuardSchedule from './components/GuardSchedule'
 import TeacherGuards from './components/TeacherGuards'
-import { networkMonitor } from './utils/networkMonitor'
 
 function App() {
   const [activeTab, setActiveTab] = useState<'schedule' | 'teachers'>('schedule')
-  const [showStats, setShowStats] = useState(false)
-  const [stats, setStats] = useState(networkMonitor.getStats())
-
-  useEffect(() => {
-    networkMonitor.init()
-    
-    // Actualizar stats cada segundo
-    const interval = setInterval(() => {
-      if (showStats) {
-        setStats(networkMonitor.getStats())
-      }
-    }, 1000)
-    
-    return () => clearInterval(interval)
-  }, [showStats])
 
   const handleClearCache = () => {
-    if (confirm('¿Resetear caché?')) {
+    if (confirm('¿Estás seguro de que quieres resetear toda la caché de la aplicación? Esto eliminará todos los datos guardados localmente.')) {
       localStorage.clear()
+      alert('Caché reseteada correctamente. La página se recargará.')
       window.location.reload()
     }
   }
@@ -48,26 +33,12 @@ function App() {
           </button>
           <button 
             className="debug-btn"
-            onClick={() => setShowStats(!showStats)}
-          >
-            📊
-          </button>
-          <button 
-            className="debug-btn"
             onClick={handleClearCache}
+            title="Resetear caché de la aplicación"
           >
-            🗑️
+            🗑️ Debug
           </button>
         </nav>
-        {showStats && (
-          <div className="stats-panel">
-            <div>Req: {stats.requests}</div>
-            <div>KB: {(stats.bytesTransferred / 1024).toFixed(1)}</div>
-            <div>RCU: {stats.rcu}</div>
-            <div>WCU: {stats.wcu}</div>
-            <button onClick={() => networkMonitor.reset()}>🔄</button>
-          </div>
-        )}
       </header>
       <main className="app-main">
         {activeTab === 'schedule' && <GuardSchedule />}
