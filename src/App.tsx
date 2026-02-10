@@ -6,6 +6,14 @@ import TeacherGuards from './components/TeacherGuards'
 function App() {
   const [activeTab, setActiveTab] = useState<'schedule' | 'teachers'>('schedule')
 
+  const handleClearCache = () => {
+    if (confirm('¿Estás seguro de que quieres resetear toda la caché de la aplicación? Esto eliminará todos los datos guardados localmente.')) {
+      localStorage.clear()
+      alert('Caché reseteada correctamente. La página se recargará.')
+      window.location.reload()
+    }
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -22,6 +30,13 @@ function App() {
             onClick={() => setActiveTab('teachers')}
           >
             Profesores de Guardia
+          </button>
+          <button 
+            className="debug-btn"
+            onClick={handleClearCache}
+            title="Resetear caché de la aplicación"
+          >
+            🗑️ Debug
           </button>
         </nav>
       </header>
