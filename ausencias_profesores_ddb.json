@@ -1,0 +1,200 @@
+[
+  {
+    "PK": "DATE#2026-02-03#SLOT#01",
+    "SK": "TEACHER#T001",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-03#SLOT#01#TEACHER#T001",
+    "aula": "101",
+    "comentarios": "Guardia de biblioteca",
+    "asignada": true,
+    "profesorAsignadoId": "TEACHER#T002",
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-03#SLOT#03",
+    "SK": "TEACHER#T008",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-03#SLOT#03#TEACHER#T008",
+    "aula": "205",
+    "comentarios": "Guardia de pasillo",
+    "asignada": false,
+    "profesorAsignadoId": null,
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-03#SLOT#03",
+    "SK": "TEACHER#T010",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-03#SLOT#03#TEACHER#T010",
+    "aula": "102",
+    "comentarios": "Apoyo en aula",
+    "asignada": true,
+    "profesorAsignadoId": "TEACHER#T009",
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-03#SLOT#05",
+    "SK": "TEACHER#T015",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-03#SLOT#05#TEACHER#T015",
+    "aula": "301",
+    "comentarios": "Guardia de patio",
+    "asignada": false,
+    "profesorAsignadoId": null,
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-05#SLOT#01",
+    "SK": "TEACHER#T013",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-05#SLOT#01#TEACHER#T013",
+    "aula": "203",
+    "comentarios": "Guardia de laboratorio",
+    "asignada": true,
+    "profesorAsignadoId": "TEACHER#T003",
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-05#SLOT#03",
+    "SK": "TEACHER#T018",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-05#SLOT#03#TEACHER#T018",
+    "aula": "104",
+    "comentarios": "Guardia de aula",
+    "asignada": false,
+    "profesorAsignadoId": null,
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-05#SLOT#05",
+    "SK": "TEACHER#T020",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-05#SLOT#05#TEACHER#T020",
+    "aula": "202",
+    "comentarios": "Guardia de pasillo",
+    "asignada": true,
+    "profesorAsignadoId": "TEACHER#T004",
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-06#SLOT#02",
+    "SK": "TEACHER#T014",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-06#SLOT#02#TEACHER#T014",
+    "aula": "105",
+    "comentarios": "Guardia de biblioteca",
+    "asignada": false,
+    "profesorAsignadoId": null,
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-06#SLOT#04",
+    "SK": "TEACHER#T010",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-06#SLOT#04#TEACHER#T010",
+    "aula": "302",
+    "comentarios": "Guardia de patio",
+    "asignada": true,
+    "profesorAsignadoId": "TEACHER#T005",
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-06#SLOT#06",
+    "SK": "TEACHER#T012",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-06#SLOT#06#TEACHER#T012",
+    "aula": "201",
+    "comentarios": "Guardia de aula",
+    "asignada": false,
+    "profesorAsignadoId": null,
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-07#SLOT#01",
+    "SK": "TEACHER#T018",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-07#SLOT#01#TEACHER#T018",
+    "aula": "103",
+    "comentarios": "Guardia de laboratorio",
+    "asignada": true,
+    "profesorAsignadoId": "TEACHER#T006",
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-07#SLOT#03",
+    "SK": "TEACHER#T016",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-07#SLOT#03#TEACHER#T016",
+    "aula": "204",
+    "comentarios": "Guardia de pasillo",
+    "asignada": false,
+    "profesorAsignadoId": null,
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-07#SLOT#05",
+    "SK": "TEACHER#T019",
+    "GSI1PK": "WEEK#2026-02-02#2026-02-08",
+    "GSI1SK": "DATE#2026-02-07#SLOT#05#TEACHER#T019",
+    "aula": "303",
+    "comentarios": "Guardia de patio",
+    "asignada": true,
+    "profesorAsignadoId": "TEACHER#T007",
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-10#SLOT#02",
+    "SK": "TEACHER#T017",
+    "GSI1PK": "WEEK#2026-02-09#2026-02-15",
+    "GSI1SK": "DATE#2026-02-10#SLOT#02#TEACHER#T017",
+    "aula": "106",
+    "comentarios": "Guardia de biblioteca",
+    "asignada": false,
+    "profesorAsignadoId": null,
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-10#SLOT#02",
+    "SK": "TEACHER#T013",
+    "GSI1PK": "WEEK#2026-02-09#2026-02-15",
+    "GSI1SK": "DATE#2026-02-10#SLOT#02#TEACHER#T013",
+    "aula": "107",
+    "comentarios": "Apoyo en aula",
+    "asignada": true,
+    "profesorAsignadoId": "TEACHER#T008",
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-11#SLOT#01",
+    "SK": "TEACHER#T020",
+    "GSI1PK": "WEEK#2026-02-09#2026-02-15",
+    "GSI1SK": "DATE#2026-02-11#SLOT#01#TEACHER#T020",
+    "aula": "108",
+    "comentarios": "Guardia de laboratorio",
+    "asignada": false,
+    "profesorAsignadoId": null,
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-17#SLOT#01",
+    "SK": "TEACHER#T010",
+    "GSI1PK": "WEEK#2026-02-16#2026-02-22",
+    "GSI1SK": "DATE#2026-02-17#SLOT#01#TEACHER#T010",
+    "aula": "110",
+    "comentarios": "Guardia de biblioteca",
+    "asignada": true,
+    "profesorAsignadoId": "TEACHER#T009",
+    "ttl": 1770336000
+  },
+  {
+    "PK": "DATE#2026-02-17#SLOT#01",
+    "SK": "TEACHER#T014",
+    "GSI1PK": "WEEK#2026-02-16#2026-02-22",
+    "GSI1SK": "DATE#2026-02-17#SLOT#01#TEACHER#T014",
+    "aula": "111",
+    "comentarios": "Apoyo en aula",
+    "asignada": false,
+    "profesorAsignadoId": null,
+    "ttl": 1770336000
+  }
+]

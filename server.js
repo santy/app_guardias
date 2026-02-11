@@ -8,58 +8,62 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3002;
+const PORT = 5000;
 
 app.use(cors());
 app.use(express.json());
 
-// Endpoint para obtener los profesores de guardia
 app.get('/api/profesores-guardia', (req, res) => {
   try {
-    const plantillaPath = path.join(__dirname, './src/data/plantilla_profesores_guardia.json');
+    const plantillaPath = path.join(__dirname, './src/data/plantilla_profesores_guardia_new.json');
     const teachersPath = path.join(__dirname, './src/data/teachers.json');
-    
-    console.log('Cargando plantilla desde:', plantillaPath);
-    console.log('Cargando profesores desde:', teachersPath);
     
     const plantillaData = JSON.parse(fs.readFileSync(plantillaPath, 'utf8'));
     const teachersData = JSON.parse(fs.readFileSync(teachersPath, 'utf8'));
     
-    // Crear un mapa de teacherId -> teacher info
+    // Crear mapa de teachers
     const teacherMap = {};
     teachersData.forEach(teacher => {
       const teacherId = teacher.PK.replace('TEACHER#', '');
-      teacherMap[teacherId] = {
-        nombre: teacher.displayName,
-        email: teacher.email,
-        active: teacher.active
-      };
+      teacherMap[teacherId] = teacher.displayName;
     });
     
-    // Transformar la plantilla para incluir nombres de profesores
+    // Transformar formato DynamoDB a formato frontend
     const transformedData = {};
-    Object.keys(plantillaData).forEach(day => {
-      transformedData[day] = {};
-      Object.keys(plantillaData[day]).forEach(hour => {
-        transformedData[day][hour] = plantillaData[day][hour].map(slot => ({
-          nombre: teacherMap[slot.teacherId]?.nombre || `Profesor ${slot.teacherId}`,
-          guardias: slot.objetivo,
-          teacherId: slot.teacherId
-        }));
+    
+    plantillaData.forEach(record => {
+      if (!record.activo) return;
+      
+      // Extraer día y slot del PK: DOW#LUNES#SLOT#01
+      const pkParts = record.PK.split('#');
+      const day = pkParts[1];
+      const slot = pkParts[3].replace(/^0+/, ''); // Remover ceros iniciales
+      
+      // Extraer teacherId del SK: TEACHER#T001
+      const teacherId = record.SK.replace('TEACHER#', '');
+      
+      if (!transformedData[day]) transformedData[day] = {};
+      if (!transformedData[day][slot]) transformedData[day][slot] = [];
+      
+      transformedData[day][slot].push({
+        nombre: teacherMap[teacherId] || `Profesor ${teacherId}`,
+        guardias: record.objetivo
       });
     });
     
+    console.log('Datos transformados:', JSON.stringify(transformedData, null, 2));
     res.json(transformedData);
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Error al cargar los datos de profesores' });
+    console.error('Error completo:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
 // Endpoint para obtener las ausencias de profesores
 app.get('/api/ausencias-profesores', (req, res) => {
   try {
-    const ausenciasPath = path.join(__dirname, './src/data/ausencias_profesores.json');
+    // Usar el archivo optimizado para DynamoDB
+    const ausenciasPath = path.join(__dirname, './ausencias_profesores_ddb.json');
     const teachersPath = path.join(__dirname, './src/data/teachers.json');
     
     console.log('Cargando ausencias desde:', ausenciasPath);
@@ -81,12 +85,24 @@ app.get('/api/ausencias-profesores', (req, res) => {
     
     // Transformar las ausencias para incluir nombres de profesores
     const transformedData = ausenciasData.map(ausencia => {
-      console.log('Procesando ausencia:', ausencia.SK, 'Asignado a:', ausencia.profesorAsignado);
+      // Extraer teacherId del SK: TEACHER#T001 -> T001
+      const teacherId = ausencia.SK.replace('TEACHER#', '');
+      
+      // Extraer profesorAsignadoId si existe: TEACHER#T002 -> T002
+      const profesorAsignadoId = ausencia.profesorAsignadoId ? 
+        ausencia.profesorAsignadoId.replace('TEACHER#', '') : null;
+      
+      console.log('Procesando ausencia:', teacherId, 'Asignado a:', profesorAsignadoId);
+      
       return {
         ...ausencia,
-        teacherName: teacherMap[ausencia.SK]?.nombre || `Profesor ${ausencia.SK}`,
-        profesorAsignadoNombre: ausencia.profesorAsignado ? 
-          (teacherMap[ausencia.profesorAsignado]?.nombre || `Profesor ${ausencia.profesorAsignado}`) : 
+        // Mantener SK original para compatibilidad con el frontend
+        SK: teacherId,
+        // Mantener profesorAsignado para compatibilidad
+        profesorAsignado: profesorAsignadoId,
+        teacherName: teacherMap[teacherId]?.nombre || `Profesor ${teacherId}`,
+        profesorAsignadoNombre: profesorAsignadoId ? 
+          (teacherMap[profesorAsignadoId]?.nombre || `Profesor ${profesorAsignadoId}`) : 
           null
       };
     });

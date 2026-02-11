@@ -1,0 +1,203 @@
+{
+  "LUNES": {
+    "1": [
+      { "teacherId": "T001", "objetivo": 4 },
+      { "teacherId": "T002", "objetivo": 5 },
+      { "teacherId": "T003", "objetivo": 3 }
+    ],
+    "2": [
+      { "teacherId": "T004", "objetivo": 4 },
+      { "teacherId": "T005", "objetivo": 4 },
+      { "teacherId": "T006", "objetivo": 3 },
+      { "teacherId": "T007", "objetivo": 3 }
+    ],
+    "3": [
+      { "teacherId": "T008", "objetivo": 4 },
+      { "teacherId": "T009", "objetivo": 3 },
+      { "teacherId": "T010", "objetivo": 3 },
+      { "teacherId": "T011", "objetivo": 3 }
+    ],
+    "4": [
+      { "teacherId": "T012", "objetivo": 2 },
+      { "teacherId": "T013", "objetivo": 3 },
+      { "teacherId": "T014", "objetivo": 4 },
+      { "teacherId": "T015", "objetivo": 1 },
+      { "teacherId": "T016", "objetivo": 2 }
+    ],
+    "5": [
+      { "teacherId": "T017", "objetivo": 2 },
+      { "teacherId": "T018", "objetivo": 2 },
+      { "teacherId": "T019", "objetivo": 2 },
+      { "teacherId": "T020", "objetivo": 2 },
+      { "teacherId": "T021", "objetivo": 2 }
+    ],
+    "6": [
+      { "teacherId": "T022", "objetivo": 3 },
+      { "teacherId": "T023", "objetivo": 3 },
+      { "teacherId": "T024", "objetivo": 3 }
+    ]
+  },
+  "MARTES": {
+    "1": [
+      { "teacherId": "T001", "objetivo": 5 },
+      { "teacherId": "T002", "objetivo": 4 },
+      { "teacherId": "T003", "objetivo": 3 },
+      { "teacherId": "T004", "objetivo": 3 }
+    ],
+    "2": [
+      { "teacherId": "T005", "objetivo": 4 },
+      { "teacherId": "T006", "objetivo": 3 },
+      { "teacherId": "T007", "objetivo": 3 },
+      { "teacherId": "T008", "objetivo": 4 },
+      { "teacherId": "T009", "objetivo": 3 }
+    ],
+    "3": [
+      { "teacherId": "T010", "objetivo": 3 },
+      { "teacherId": "T011", "objetivo": 2 },
+      { "teacherId": "T012", "objetivo": 4 },
+      { "teacherId": "T013", "objetivo": 2 },
+      { "teacherId": "T014", "objetivo": 2 },
+      { "teacherId": "T015", "objetivo": 0 }
+    ],
+    "4": [
+      { "teacherId": "T016", "objetivo": 3 },
+      { "teacherId": "T017", "objetivo": 5 },
+      { "teacherId": "T018", "objetivo": 5 },
+      { "teacherId": "T019", "objetivo": 4 },
+      { "teacherId": "T020", "objetivo": 8 }
+    ],
+    "5": [
+      { "teacherId": "T021", "objetivo": 4 },
+      { "teacherId": "T022", "objetivo": 3 },
+      { "teacherId": "T023", "objetivo": 4 },
+      { "teacherId": "T024", "objetivo": 3 },
+      { "teacherId": "T001", "objetivo": 5 }
+    ],
+    "6": [
+      { "teacherId": "T002", "objetivo": 4 },
+      { "teacherId": "T003", "objetivo": 4 },
+      { "teacherId": "T004", "objetivo": 5 }
+    ]
+  },
+  "MIÉRCOLES": {
+    "1": [
+      { "teacherId": "T005", "objetivo": 3 },
+      { "teacherId": "T006", "objetivo": 7 },
+      { "teacherId": "T007", "objetivo": 1 },
+      { "teacherId": "T008", "objetivo": 6 }
+    ],
+    "2": [
+      { "teacherId": "T009", "objetivo": 1 },
+      { "teacherId": "T010", "objetivo": 2 },
+      { "teacherId": "T011", "objetivo": 3 },
+      { "teacherId": "T012", "objetivo": 3 },
+      { "teacherId": "T013", "objetivo": 3 }
+    ],
+    "3": [
+      { "teacherId": "T014", "objetivo": 7 },
+      { "teacherId": "T015", "objetivo": 3 },
+      { "teacherId": "T016", "objetivo": 4 },
+      { "teacherId": "T017", "objetivo": 3 },
+      { "teacherId": "T018", "objetivo": 3 }
+    ],
+    "4": [
+      { "teacherId": "T019", "objetivo": 2 },
+      { "teacherId": "T020", "objetivo": 3 },
+      { "teacherId": "T021", "objetivo": 3 },
+      { "teacherId": "T022", "objetivo": 7 },
+      { "teacherId": "T023", "objetivo": 3 },
+      { "teacherId": "T024", "objetivo": 0 }
+    ],
+    "5": [
+      { "teacherId": "T001", "objetivo": 2 },
+      { "teacherId": "T002", "objetivo": 5 },
+      { "teacherId": "T003", "objetivo": 7 },
+      { "teacherId": "T004", "objetivo": 5 }
+    ],
+    "6": [
+      { "teacherId": "T005", "objetivo": 4 },
+      { "teacherId": "T006", "objetivo": 6 }
+    ]
+  },
+  "JUEVES": {
+    "1": [
+      { "teacherId": "T007", "objetivo": 4 },
+      { "teacherId": "T008", "objetivo": 5 },
+      { "teacherId": "T009", "objetivo": 6 },
+      { "teacherId": "T010", "objetivo": 2 },
+      { "teacherId": "T011", "objetivo": 0 }
+    ],
+    "2": [
+      { "teacherId": "T012", "objetivo": 3 },
+      { "teacherId": "T013", "objetivo": 3 },
+      { "teacherId": "T014", "objetivo": 2 },
+      { "teacherId": "T015", "objetivo": 3 },
+      { "teacherId": "T016", "objetivo": 3 }
+    ],
+    "3": [
+      { "teacherId": "T017", "objetivo": 3 },
+      { "teacherId": "T018", "objetivo": 1 },
+      { "teacherId": "T019", "objetivo": 4 },
+      { "teacherId": "T020", "objetivo": 3 },
+      { "teacherId": "T021", "objetivo": 4 }
+    ],
+    "4": [
+      { "teacherId": "T022", "objetivo": 4 },
+      { "teacherId": "T023", "objetivo": 5 },
+      { "teacherId": "T024", "objetivo": 9 },
+      { "teacherId": "T001", "objetivo": 5 },
+      { "teacherId": "T002", "objetivo": 4 }
+    ],
+    "5": [
+      { "teacherId": "T003", "objetivo": 3 },
+      { "teacherId": "T004", "objetivo": 2 },
+      { "teacherId": "T005", "objetivo": 2 },
+      { "teacherId": "T006", "objetivo": 5 },
+      { "teacherId": "T007", "objetivo": 4 }
+    ],
+    "6": [
+      { "teacherId": "T008", "objetivo": 4 },
+      { "teacherId": "T009", "objetivo": 4 },
+      { "teacherId": "T010", "objetivo": 4 }
+    ]
+  },
+  "VIERNES": {
+    "1": [
+      { "teacherId": "T011", "objetivo": 4 },
+      { "teacherId": "T012", "objetivo": 3 },
+      { "teacherId": "T013", "objetivo": 2 }
+    ],
+    "2": [
+      { "teacherId": "T014", "objetivo": 5 },
+      { "teacherId": "T015", "objetivo": 4 },
+      { "teacherId": "T016", "objetivo": 4 },
+      { "teacherId": "T017", "objetivo": 4 },
+      { "teacherId": "T018", "objetivo": 4 }
+    ],
+    "3": [
+      { "teacherId": "T019", "objetivo": 6 },
+      { "teacherId": "T020", "objetivo": 6 },
+      { "teacherId": "T021", "objetivo": 4 },
+      { "teacherId": "T022", "objetivo": 3 },
+      { "teacherId": "T023", "objetivo": 5 }
+    ],
+    "4": [
+      { "teacherId": "T024", "objetivo": 5 },
+      { "teacherId": "T001", "objetivo": 5 },
+      { "teacherId": "T002", "objetivo": 3 },
+      { "teacherId": "T003", "objetivo": 3 },
+      { "teacherId": "T004", "objetivo": 3 }
+    ],
+    "5": [
+      { "teacherId": "T005", "objetivo": 6 },
+      { "teacherId": "T006", "objetivo": 4 },
+      { "teacherId": "T007", "objetivo": 5 },
+      { "teacherId": "T008", "objetivo": 5 }
+    ],
+    "6": [
+      { "teacherId": "T009", "objetivo": 2 },
+      { "teacherId": "T010", "objetivo": 7 },
+      { "teacherId": "T011", "objetivo": 1 }
+    ]
+  }
+}
