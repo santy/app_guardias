@@ -1,5 +1,6 @@
 import { getApiUrl } from '../config/api'
 import { cacheService } from './cacheService'
+import { teachersService } from './teachersService'
 
 const CACHE_KEYS = {
   PROFESORES_GUARDIA: 'profesores_guardia'
@@ -66,13 +67,40 @@ export const profesoresService = {
     }
 
     try {
-      const response = await fetch(`${getApiUrl()}/api/profesores-guardia`);
-      if (!response.ok) {
+      const [plantillaResponse, teachers] = await Promise.all([
+        fetch(`${getApiUrl()}/api/profesores-guardia`),
+        teachersService.getTeachers()
+      ]);
+      
+      if (!plantillaResponse.ok) {
         throw new Error('Error al obtener los datos');
       }
-      const data = await response.json();
-      cacheService.set(CACHE_KEYS.PROFESORES_GUARDIA, data);
-      return { ...data, _lastUpdate: new Date().toLocaleString('es-ES') };
+      
+      const plantillaData = await plantillaResponse.json();
+      const teacherMap = teachersService.createTeacherMap(teachers);
+      
+      // Transformar formato DynamoDB a formato frontend
+      const transformedData: any = {};
+      
+      plantillaData.forEach((record: any) => {
+        if (!record.activo) return;
+        
+        const pkParts = record.PK.split('#');
+        const day = pkParts[1];
+        const slot = pkParts[3].replace(/^0+/, '');
+        const teacherId = record.SK.replace('TEACHER#', '');
+        
+        if (!transformedData[day]) transformedData[day] = {};
+        if (!transformedData[day][slot]) transformedData[day][slot] = [];
+        
+        transformedData[day][slot].push({
+          nombre: teacherMap[teacherId] || `Profesor ${teacherId}`,
+          guardias: record.objetivo
+        });
+      });
+      
+      cacheService.set(CACHE_KEYS.PROFESORES_GUARDIA, transformedData);
+      return { ...transformedData, _lastUpdate: new Date().toLocaleString('es-ES') };
     } catch (error) {
       console.error('Error fetching profesores:', error);
       throw error;
@@ -81,12 +109,34 @@ export const profesoresService = {
 
   async getAusenciasProfesores(weekDate?: string) {
     try {
-      const response = await fetch(`${getApiUrl()}/api/ausencias-profesores`);
-      if (!response.ok) {
+      const [ausenciasResponse, teachers] = await Promise.all([
+        fetch(`${getApiUrl()}/api/ausencias-profesores`),
+        teachersService.getTeachers()
+      ]);
+      
+      if (!ausenciasResponse.ok) {
         throw new Error('Error al obtener las ausencias');
       }
-      const rawData = await response.json();
-      const transformedData = transformAusenciasData(rawData);
+      
+      const rawData = await ausenciasResponse.json();
+      const teacherMap = teachersService.createTeacherMap(teachers);
+      
+      // Agregar nombres de profesores a los datos
+      const dataWithNames = rawData.map((ausencia: any) => {
+        const teacherId = ausencia.SK.replace('TEACHER#', '');
+        const profesorAsignadoId = ausencia.profesorAsignado ? 
+          ausencia.profesorAsignado.replace('TEACHER#', '') : null;
+        
+        return {
+          ...ausencia,
+          teacherName: teacherMap[teacherId] || `Profesor ${teacherId}`,
+          profesorAsignadoNombre: profesorAsignadoId ? 
+            (teacherMap[profesorAsignadoId] || `Profesor ${profesorAsignadoId}`) : 
+            null
+        };
+      });
+      
+      const transformedData = transformAusenciasData(dataWithNames);
       
       if (weekDate) {
         const filteredData = { [weekDate]: transformedData[weekDate] || {} };
