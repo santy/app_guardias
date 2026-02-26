@@ -1,8 +1,10 @@
 export const handler = async (event) => {
   try {
-    const guardSchedule = [
-      { hour: "08:30", teacher: "Ana López" },
-      { hour: "09:25", teacher: "Carlos Pérez" }
+    const teachers = [
+      { PK: "TEACHER#T001", displayName: "Ana López", email: "ana.lopez@example.com", active: true },
+      { PK: "TEACHER#T002", displayName: "Carlos Pérez", email: "carlos.perez@example.com", active: true },
+      { PK: "TEACHER#T003", displayName: "María García", email: "maria.garcia@example.com", active: true },
+      { PK: "TEACHER#T004", displayName: "Juan Martín", email: "juan.martin@example.com", active: true }
     ];
 
     return {
@@ -11,13 +13,17 @@ export const handler = async (event) => {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(guardSchedule)
+      body: JSON.stringify(teachers)
     };
   } catch (error) {
-    console.error("Error en profesores-guardia:", error);
+    console.error("Error en teachers:", error);
 
     return {
       statusCode: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ message: "Internal server error" })
     };
   }

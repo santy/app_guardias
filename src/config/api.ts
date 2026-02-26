@@ -10,5 +10,5 @@ export const config = {
 
 export const getApiUrl = () => {
   // Usar AWS API directamente
-  return 'https://bs353nauqj.execute-api.us-east-1.amazonaws.com/prod'
+  return 'https://dsonjx0r30.execute-api.us-east-1.amazonaws.com/prod'
 }

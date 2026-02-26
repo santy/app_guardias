@@ -31,8 +31,11 @@ export const teachersService = {
   createTeacherMap(teachers: Teacher[]) {
     const teacherMap: { [key: string]: string } = {};
     teachers.forEach(teacher => {
-      const teacherId = teacher.PK.replace('TEACHER#', '');
-      teacherMap[teacherId] = teacher.displayName;
+      // Verificar que teacher y teacher.PK existen
+      if (teacher && teacher.PK) {
+        const teacherId = teacher.PK.replace('TEACHER#', '');
+        teacherMap[teacherId] = teacher.displayName;
+      }
     });
     return teacherMap;
   }
