@@ -5,6 +5,7 @@ import TeacherGuards from './components/TeacherGuards'
 import ReportAbsence from './components/ReportAbsence'
 import { networkMonitor } from './utils/networkMonitor'
 import { authService } from './services/authService'
+import { teachersService } from './services/teachersService'
 
 function App() {
   const [activeTab, setActiveTab] = useState<'schedule' | 'teachers' | 'report'>('schedule')
@@ -57,7 +58,7 @@ function App() {
     <div className="app">
       <div className="sidebar">
         <span className="user-info">
-          {user?.displayName || user?.email || 'Desconocido'} - {user?.email} ({user?.groups?.join(', ') || 'Sin grupo'}) | <button onClick={handleLogout} className="logout-btn">Salir</button>
+          {user?.displayName || user?.email || 'Desconocido'} - {user?.email} ({user?.groups?.join(', ') || 'Sin grupo'}) {user?.teacherId && `| ID: ${user.teacherId}`} | <button onClick={handleLogout} className="logout-btn">Salir</button>
         </span>
       </div>
       <div className="main-content">

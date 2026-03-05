@@ -23,8 +23,19 @@ export const teachersService = {
     
     teachersPromise = (async () => {
       try {
-        // Temporalmente sin autenticación hasta resolver CORS
-        const response = await fetch(`${getApiUrl()}/api/teachers`);
+        // Obtener token de autorización
+        const token = localStorage.getItem('accessToken');
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json'
+        };
+        
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        
+        const response = await fetch(`${getApiUrl()}/api/teachers`, {
+          headers
+        });
         
         if (!response.ok) {
           throw new Error('Error al obtener los profesores');

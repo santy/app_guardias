@@ -9,6 +9,5 @@ export const config = {
 }
 
 export const getApiUrl = () => {
-  // Usar API anterior temporalmente hasta resolver CORS en la nueva API
-  return 'https://dsonjx0r30.execute-api.us-east-1.amazonaws.com/prod'
+  return config.production.apiUrl
 }

@@ -1,0 +1,23 @@
+# Parche para corregir CORS en respuestas 401
+# Reemplaza las IntegrationResponses en todos los métodos GET
+
+# Para cada método GET, cambiar:
+IntegrationResponses:
+  - StatusCode: 200
+    ResponseParameters:
+      method.response.header.Access-Control-Allow-Origin: "'*'"
+
+# Por:
+IntegrationResponses:
+  - StatusCode: 200
+    ResponseParameters:
+      method.response.header.Access-Control-Allow-Origin: "'*'"
+  - StatusCode: 401
+    ResponseParameters:
+      method.response.header.Access-Control-Allow-Origin: "'*'"
+  - StatusCode: 403
+    ResponseParameters:
+      method.response.header.Access-Control-Allow-Origin: "'*'"
+  - StatusCode: 500
+    ResponseParameters:
+      method.response.header.Access-Control-Allow-Origin: "'*'"

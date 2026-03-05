@@ -25,6 +25,11 @@ Parameters:
     Default: ausencias-profesores.zip
     Description: "S3 key del ZIP de ausencias-profesores"
 
+  ReportAbsenceZipKey:
+    Type: String
+    Default: reportar-ausencia.zip
+    Description: "S3 key del ZIP de reportar-ausencia"
+
 Resources:
   # DynamoDB Tables
   TeachersTable:
@@ -288,6 +293,20 @@ Resources:
         S3Bucket: !Ref CodeBucket
         S3Key: !Ref AbsencesZipKey
 
+  ReportAbsenceFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: app-guardias-reportar-ausencia-v2
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
+      Runtime: nodejs20.x
+      Handler: reportar-ausencia/index.handler
+      Environment:
+        Variables:
+          VERSION: "2.1"
+      Code:
+        S3Bucket: !Ref CodeBucket
+        S3Key: !Ref ReportAbsenceZipKey
+
   # API Gateway REST API
   RestApi:
     Type: AWS::ApiGateway::RestApi
@@ -434,17 +453,27 @@ Resources:
       AuthorizationType: COGNITO_USER_POOLS
       AuthorizerId: !Ref CognitoAuthorizer
       Integration:
-        Type: MOCK
-        RequestTemplates:
-          application/json: '{ "statusCode": 200 }'
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ReportAbsenceFunction.Arn}/invocations"
         IntegrationResponses:
           - StatusCode: 200
             ResponseParameters:
               method.response.header.Access-Control-Allow-Origin: "'*'"
-            ResponseTemplates:
-              application/json: '{"message": "Ausencia reportada correctamente"}'
+          - StatusCode: 400
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          - StatusCode: 500
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
       MethodResponses:
         - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+        - StatusCode: 400
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+        - StatusCode: 500
           ResponseParameters:
             method.response.header.Access-Control-Allow-Origin: true
 
@@ -456,17 +485,9 @@ Resources:
       HttpMethod: OPTIONS
       AuthorizationType: NONE
       Integration:
-        Type: MOCK
-        RequestTemplates:
-          application/json: '{ "statusCode": 200 }'
-        IntegrationResponses:
-          - StatusCode: 200
-            ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
-              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
-              method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
-            ResponseTemplates:
-              application/json: "{}"
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ReportAbsenceFunction.Arn}/invocations"
       MethodResponses:
         - StatusCode: 200
           ResponseParameters:
@@ -602,6 +623,14 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/GET/api/ausencias-profesores"
 
+  ReportAbsenceInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ReportAbsenceFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/api/reportar-ausencia"
+
   # API Deployment
   ApiDeployment:
     Type: AWS::ApiGateway::Deployment
@@ -617,6 +646,7 @@ Resources:
       - ReportAbsencePost
     Properties:
       RestApiId: !Ref RestApi
+      Description: "Deployment with reportar-ausencia endpoint - v4"
 
   ApiStage:
     Type: AWS::ApiGateway::Stage
@@ -624,6 +654,27 @@ Resources:
       RestApiId: !Ref RestApi
       DeploymentId: !Ref ApiDeployment
       StageName: !Ref StageName
+
+  # Gateway Responses for CORS on errors
+  UnauthorizedGatewayResponse:
+    Type: AWS::ApiGateway::GatewayResponse
+    Properties:
+      RestApiId: !Ref RestApi
+      ResponseType: UNAUTHORIZED
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        gatewayresponse.header.Access-Control-Allow-Methods: "'GET,POST,OPTIONS'"
+
+  AccessDeniedGatewayResponse:
+    Type: AWS::ApiGateway::GatewayResponse
+    Properties:
+      RestApiId: !Ref RestApi
+      ResponseType: ACCESS_DENIED
+      ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        gatewayresponse.header.Access-Control-Allow-Methods: "'GET,POST,OPTIONS'"
 
 Outputs:
   # API Gateway Outputs

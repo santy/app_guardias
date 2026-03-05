@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { authService } from '../services/authService'
+import { api } from '../services/api'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -27,33 +28,28 @@ export default function ReportAbsence() {
 
     try {
       const user = authService.getUser()
-      if (!user?.username) {
-        throw new Error('No se pudo obtener el usuario')
+      if (!user?.teacherId) {
+        throw new Error('No se pudo obtener el ID del profesor')
       }
 
-      // Generar teacherId basado en el username (simulando la lógica del sistema)
-      const teacherId = user.username === 'profesor' ? 'T001' : `T${user.username.slice(-3).padStart(3, '0')}`
-
       const absenceData = {
-        teacherId: teacherId,
-        fecha: form.fecha?.toISOString().split('T')[0],
+        teacherId: user.teacherId,
+        fecha: form.fecha?.toLocaleDateString('en-CA'), // Formato YYYY-MM-DD sin zona horaria
         hora: form.hora,
         aula: form.aula,
         comentarios: form.comentarios
       }
 
-      // Simular envío por consola
-      console.log('=== SIMULACIÓN ENVÍO API ===')
-      console.log('Endpoint: POST /api/reportar-ausencia')
-      console.log('Datos enviados:', JSON.stringify(absenceData, null, 2))
-      console.log('Usuario:', user)
-      console.log('TeacherId generado:', teacherId)
-      console.log('============================')
-
-      // Simular respuesta exitosa después de 1 segundo
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Enviar a la API real
+      const response = await api.post('/api/reportar-ausencia', absenceData)
       
-      setMessage('Ausencia reportada correctamente (simulado)')
+      setMessage(`Ausencia reportada correctamente:
+      📅 Fecha: ${form.fecha?.toLocaleDateString('es-ES')}
+      🕐 Hora: ${form.hora}ª hora
+      🏫 Aula: ${form.aula}
+      👤 Profesor: ${user.teacherId}
+      💬 Comentarios: ${form.comentarios || 'Sin comentarios'}`)
+      
       setForm({ fecha: null, hora: '1', aula: '', comentarios: '' })
     } catch (error) {
       console.error('Error en simulación:', error)
@@ -69,7 +65,7 @@ export default function ReportAbsence() {
       
       {message && (
         <div className={`message ${message.includes('Error') ? 'error' : 'success'}`}>
-          {message}
+          <pre style={{ whiteSpace: 'pre-line', fontFamily: 'inherit', margin: 0 }}>{message}</pre>
         </div>
       )}
 

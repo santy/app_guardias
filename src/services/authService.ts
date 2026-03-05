@@ -31,28 +31,40 @@ class AuthService {
     const urlParams = new URLSearchParams(window.location.search)
     const code = urlParams.get('code')
     
+    // Si no hay código y no hay token guardado, redirigir a login
+    if (!code && !localStorage.getItem('accessToken')) {
+      this.login()
+      return
+    }
+    
     if (code) {
       console.log('Código recibido, intercambiando...');
-      // Establecer token temporal para evitar bucle
-      const teacherName = this.getTeacherNameByEmail('profesor@example.com');
-      this.accessToken = 'temp-token'
-      this.userInfo = {
-        username: 'profesor',
-        email: 'profesor@example.com',
-        displayName: teacherName || 'Profesor',
-        groups: ['profesores']
-      }
-      
-      localStorage.setItem('accessToken', this.accessToken)
-      localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
-      
-      // Limpiar URL inmediatamente
+      // Limpiar URL inmediatamente para evitar bucle
       window.history.replaceState({}, document.title, window.location.pathname)
       
-      // Intentar intercambio real en background
-      this.exchangeCodeForToken(code).catch(console.error)
+      // Hacer intercambio real
+      this.exchangeCodeForToken(code).then(() => {
+        console.log('Intercambio exitoso, token real obtenido:', this.accessToken)
+        // Guardar token real
+        localStorage.setItem('accessToken', this.accessToken)
+        localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+        // Recargar para usar el token correcto
+        window.location.reload()
+      }).catch(error => {
+        console.error('Error detallado en intercambio:', error)
+        // Fallback si falla
+        this.accessToken = 'fallback-token'
+        this.userInfo = {
+          username: 'profesor',
+          email: 'profesor@example.com',
+          displayName: 'Profesor',
+          groups: ['profesores']
+        }
+        localStorage.setItem('accessToken', this.accessToken)
+        localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+      })
     } else {
-      // Verificar si hay token guardado
+      // Cargar token guardado
       this.accessToken = localStorage.getItem('accessToken')
       const savedUserInfo = localStorage.getItem('userInfo')
       if (savedUserInfo) {
@@ -62,6 +74,7 @@ class AuthService {
   }
 
   private async exchangeCodeForToken(code: string) {
+    console.log('=== INICIANDO INTERCAMBIO DE TOKEN ===');
     console.log('Intercambiando código por token...');
     const tokenUrl = `${this.config.domain}/oauth2/token`
     
@@ -90,9 +103,11 @@ class AuthService {
       }
 
       const tokens = await response.json()
-      console.log('Tokens recibidos:', Object.keys(tokens));
+      console.log('Tokens recibidos:', tokens);
+      console.log('Access token:', tokens.access_token);
       
-      this.accessToken = tokens.access_token
+      // Asignar token PRIMERO para poder hacer la petición
+      this.accessToken = tokens.id_token  // Usar ID token en lugar de access token
       
       // Decodificar ID token para obtener información del usuario
       const userInfo = this.decodeJWT(tokens.id_token)
@@ -101,24 +116,28 @@ class AuthService {
       // Buscar nombre del profesor en localStorage
       const teacherName = this.getTeacherNameByEmail(userInfo.email);
       
+      // Obtener teacherId desde /api/teachers (ahora que tenemos el token)
+      const teacherId = await this.getTeacherIdByEmail(userInfo.email);
+      console.log('TeacherId obtenido:', teacherId);
+      
       this.userInfo = {
         username: userInfo.preferred_username || userInfo.email,
         email: userInfo.email,
         displayName: teacherName || userInfo.email,
-        groups: userInfo['cognito:groups'] || []
+        groups: userInfo['cognito:groups'] || [],
+        teacherId: teacherId
       }
       
       localStorage.setItem('accessToken', this.accessToken)
       localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
     } catch (error) {
       console.error('Error intercambiando tokens:', error)
-      // Fallback: simular usuario para evitar bucle
-      const teacherName = this.getTeacherNameByEmail('profesor@example.com');
+      // Fallback: crear token por defecto si falla el intercambio
       this.accessToken = 'fallback-token'
       this.userInfo = {
         username: 'profesor',
         email: 'profesor@example.com',
-        displayName: teacherName || 'Profesor',
+        displayName: 'Profesor',
         groups: ['profesores']
       }
       localStorage.setItem('accessToken', this.accessToken)
@@ -141,6 +160,46 @@ class AuthService {
     }
   }
 
+  private async getTeacherIdByEmail(email: string): Promise<string | null> {
+    console.log('🔍 Buscando teacherId para email:', email);
+    try {
+      const { getApiUrl } = await import('../config/api');
+      console.log('📡 Haciendo petición a /api/teachers...');
+      
+      const response = await fetch(`${getApiUrl()}/api/teachers`, {
+        headers: {
+          'Authorization': `Bearer ${this.accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('📡 Respuesta /api/teachers status:', response.status);
+      
+      if (response.ok) {
+        const teachers = await response.json();
+        console.log('👥 Teachers obtenidos:', teachers.length, 'profesores');
+        console.log('👥 Primer profesor:', teachers[0]);
+        
+        const teacher = teachers.find((t: any) => t.email === email);
+        console.log('🎯 Profesor encontrado:', teacher);
+        
+        if (teacher) {
+          // Extraer ID del campo PK (formato: "TEACHER#T001" -> "T001")
+          const teacherId = teacher.PK ? teacher.PK.replace('TEACHER#', '') : teacher.id;
+          console.log('🆔 TeacherId extraído:', teacherId);
+          return teacherId;
+        }
+        
+        return null;
+      } else {
+        console.error('❌ Error en petición teachers:', response.status);
+      }
+    } catch (error) {
+      console.error('❌ Error obteniendo teacherId:', error);
+    }
+    return null;
+  }
+
   private decodeJWT(token: string): any {
     try {
       const base64Url = token.split('.')[1]
@@ -156,12 +215,6 @@ class AuthService {
     }
   }
 
-  private async exchangeCodeForToken(code: string) {
-    // Implementar intercambio de código por token
-    // Por ahora simulamos el token
-    console.log('Intercambiando código:', code)
-  }
-
   login() {
     const loginUrl = `${this.config.domain}/login?client_id=${this.config.clientId}&response_type=code&scope=email+openid+profile&redirect_uri=${encodeURIComponent(this.config.redirectUri)}`
     window.location.href = loginUrl
@@ -170,15 +223,14 @@ class AuthService {
   logout() {
     this.accessToken = null
     this.userInfo = null
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('userInfo')
+    localStorage.clear()
     
     const logoutUrl = `${this.config.domain}/logout?client_id=${this.config.clientId}&logout_uri=${encodeURIComponent(this.config.redirectUri)}`
     window.location.href = logoutUrl
   }
 
   isAuthenticated(): boolean {
-    return !!this.accessToken
+    return !!(this.accessToken || localStorage.getItem('accessToken'))
   }
 
   getUser(): UserInfo | null {
@@ -186,7 +238,7 @@ class AuthService {
   }
 
   getToken(): string | null {
-    return this.accessToken
+    return this.accessToken || localStorage.getItem('accessToken')
   }
 
   setConfig(config: Partial<CognitoConfig>) {
