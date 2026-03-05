@@ -31,6 +31,14 @@ const getWeekStart = (dateString: string): string => {
   return monday.toISOString().split('T')[0]
 }
 
+const getWeekRange = (dateString: string): string => {
+  const weekStart = getWeekStart(dateString)
+  const startDate = new Date(weekStart)
+  const endDate = new Date(startDate)
+  endDate.setDate(startDate.getDate() + 6)
+  return `WEEK#${weekStart}#${endDate.toISOString().split('T')[0]}`
+}
+
 const transformAusenciasData = (ausenciasArray: AusenciaRecord[]) => {
   const result: any = {}
   
@@ -109,9 +117,9 @@ export const profesoresService = {
 
   async getAusenciasProfesores(weekDate?: string) {
     try {
-      const currentWeekStart = weekDate || getWeekStart(new Date().toISOString().split('T')[0]);
+      const currentWeekRange = getWeekRange(weekDate || new Date().toISOString().split('T')[0]);
       const [ausenciasResponse, teachers] = await Promise.all([
-        fetch(`${getApiUrl()}/api/ausencias-profesores?week=${currentWeekStart}`),
+        fetch(`${getApiUrl()}/api/ausencias-profesores?week=${currentWeekRange}`),
         teachersService.getTeachers()
       ]);
       
