@@ -109,10 +109,14 @@ const GuardSchedule = () => {
   const canGoForward = currentWeekOffset < 3
 
   const getWeekDateKey = (weekOffset: number) => {
-    // Fechas corregidas: lunes 2 feb 2026, 9 feb 2026, 16 feb 2026
-    const weekDates = ['2026-02-02', '2026-02-09', '2026-02-16']
-    const index = weekOffset // 0 = semana actual, 1 = siguiente, 2 = tercera
-    return weekDates[index] || '2026-02-02' // fallback a primera semana
+    const today = new Date()
+    const currentDay = today.getDay()
+    const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay
+    
+    const monday = new Date(today)
+    monday.setDate(today.getDate() + mondayOffset + (weekOffset * 7))
+    
+    return monday.toISOString().split('T')[0]
   }
 
   const handleCellClick = (day: string, hour: string) => {
