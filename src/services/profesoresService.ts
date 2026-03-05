@@ -109,8 +109,9 @@ export const profesoresService = {
 
   async getAusenciasProfesores(weekDate?: string) {
     try {
+      const currentWeekStart = weekDate || getWeekStart(new Date().toISOString().split('T')[0]);
       const [ausenciasResponse, teachers] = await Promise.all([
-        fetch(`${getApiUrl()}/api/ausencias-profesores`),
+        fetch(`${getApiUrl()}/api/ausencias-profesores?week=${currentWeekStart}`),
         teachersService.getTeachers()
       ]);
       

@@ -1,0 +1,150 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Cognito User Pool for Guardias App with Hosted UI - Academy LabRole compatible'
+
+Resources:
+  GuardiasUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: guardias-user-pool
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+
+  GuardiasUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      ClientName: guardias-app-client
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - email
+        - openid
+        - profile
+      AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs:
+        - http://localhost:5173
+      LogoutURLs:
+        - http://localhost:5173
+      SupportedIdentityProviders:
+        - COGNITO
+
+  GuardiasUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Domain: !Sub "guardias-${AWS::AccountId}"
+
+  ProfesoresGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      GroupName: profesores
+      Description: Grupo de profesores con acceso a la aplicación
+
+  JefaturaGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      GroupName: jefatura
+      Description: Grupo de jefatura con permisos de gestión
+
+  AdministradoresGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      GroupName: administradores
+      Description: Grupo de administradores con permisos completos
+
+  ProfesorUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: profesor@example.com
+      UserAttributes:
+        - Name: email
+          Value: profesor@example.com
+      MessageAction: SUPPRESS
+
+  JefaturaUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: jefatura@example.com
+      UserAttributes:
+        - Name: email
+          Value: jefatura@example.com
+      MessageAction: SUPPRESS
+
+  AdministradorUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: admin@example.com
+      UserAttributes:
+        - Name: email
+          Value: admin@example.com
+      MessageAction: SUPPRESS
+
+  ProfesorUserToGroup:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: !Ref ProfesorUser
+      GroupName: !Ref ProfesoresGroup
+
+  JefaturaUserToGroup:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: !Ref JefaturaUser
+      GroupName: !Ref JefaturaGroup
+
+  AdministradorUserToGroup:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: !Ref AdministradorUser
+      GroupName: !Ref AdministradoresGroup
+
+Outputs:
+  UserPoolId:
+    Description: ID del User Pool de Cognito
+    Value: !Ref GuardiasUserPool
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolId"
+  
+  UserPoolClientId:
+    Description: ID del Client del User Pool
+    Value: !Ref GuardiasUserPoolClient
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolClientId"
+  
+  UserPoolArn:
+    Description: ARN del User Pool
+    Value: !GetAtt GuardiasUserPool.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolArn"
+
+  HostedUIURL:
+    Description: URL de la página de inicio de sesión
+    Value: !Sub "https://${GuardiasUserPoolDomain}.auth.${AWS::Region}.amazoncognito.com/login?client_id=${GuardiasUserPoolClient}&response_type=code&scope=email+openid+profile&redirect_uri=http://localhost:5173"
