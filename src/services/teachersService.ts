@@ -7,6 +7,8 @@ interface Teacher {
   active: boolean
 }
 
+let teachersPromise: Promise<Teacher[]> | null = null;
+
 export const teachersService = {
   async getTeachers(): Promise<Teacher[]> {
     const cached = localStorage.getItem('teachers');
@@ -14,18 +16,28 @@ export const teachersService = {
       return JSON.parse(cached);
     }
     
-    try {
-      const response = await fetch(`${getApiUrl()}/api/teachers`);
-      if (!response.ok) {
-        throw new Error('Error al obtener los profesores');
-      }
-      const data = await response.json();
-      localStorage.setItem('teachers', JSON.stringify(data));
-      return data;
-    } catch (error) {
-      console.error('Error fetching teachers:', error);
-      throw error;
+    if (teachersPromise) {
+      return teachersPromise;
     }
+    
+    teachersPromise = (async () => {
+      try {
+        const response = await fetch(`${getApiUrl()}/api/teachers`);
+        if (!response.ok) {
+          throw new Error('Error al obtener los profesores');
+        }
+        const data = await response.json();
+        localStorage.setItem('teachers', JSON.stringify(data));
+        teachersPromise = null;
+        return data;
+      } catch (error) {
+        teachersPromise = null;
+        console.error('Error fetching teachers:', error);
+        throw error;
+      }
+    })();
+    
+    return teachersPromise;
   },
 
   createTeacherMap(teachers: Teacher[]) {
