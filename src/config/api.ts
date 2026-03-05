@@ -4,11 +4,11 @@ export const config = {
     apiUrl: 'http://localhost:5000'
   },
   production: {
-    apiUrl: 'https://bs353nauqj.execute-api.us-east-1.amazonaws.com/prod'
+    apiUrl: 'https://628ndxl031.execute-api.us-east-1.amazonaws.com/prod'
   }
 }
 
 export const getApiUrl = () => {
-  // Usar AWS API directamente
-  return 'https://dsonjx0r30.execute-api.us-east-1.amazonaws.com/prod'
+  // Usar nueva API con Cognito
+  return 'https://628ndxl031.execute-api.us-east-1.amazonaws.com/prod'
 }

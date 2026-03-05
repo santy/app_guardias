@@ -1,7 +1,7 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 2rem;
   text-align: center;
 }
 
@@ -464,4 +464,64 @@
 
 .reset-stats-btn:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+  text-align: center;
+}
+.app {
+  display: flex !important;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  border-bottom: 1px solid #eee;
+}
+
+.user-info {
+  color: #333;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.8rem;
+  padding: 0;
+}
+
+.main-content {
+  flex: 1;
 }

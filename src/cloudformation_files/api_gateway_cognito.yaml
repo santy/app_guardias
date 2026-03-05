@@ -1,0 +1,462 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "app-guardias - API Gateway REST + 3 Lambdas + Cognito Authentication"
+
+Parameters:
+  StageName:
+    Type: String
+    Default: prod
+
+  CodeBucket:
+    Type: String
+    Description: "S3 bucket donde subir los ZIPs de Lambda"
+
+  TeachersZipKey:
+    Type: String
+    Default: teachers.zip
+    Description: "S3 key del ZIP de teachers (ej: lambdas/teachers.zip)"
+
+  GuardScheduleZipKey:
+    Type: String
+    Default: profesores-guardia.zip
+    Description: "S3 key del ZIP de profesores-guardia"
+
+  AbsencesZipKey:
+    Type: String
+    Default: ausencias-profesores.zip
+    Description: "S3 key del ZIP de ausencias-profesores"
+
+Resources:
+  # Cognito User Pool
+  GuardiasUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: guardias-user-pool
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+
+  GuardiasUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      ClientName: guardias-app-client
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_ADMIN_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - email
+        - openid
+        - profile
+      AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs:
+        - http://localhost:5173
+      LogoutURLs:
+        - http://localhost:5173
+      SupportedIdentityProviders:
+        - COGNITO
+
+  GuardiasUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Domain: !Sub "guardias-${AWS::AccountId}"
+
+  # Cognito Groups
+  ProfesoresGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      GroupName: profesores
+      Description: Grupo de profesores con acceso a la aplicación
+
+  JefaturaGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      GroupName: jefatura
+      Description: Grupo de jefatura con permisos de gestión
+
+  AdministradoresGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      GroupName: administradores
+      Description: Grupo de administradores con permisos completos
+
+  # Test Users
+  ProfesorUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: profesor@example.com
+      UserAttributes:
+        - Name: email
+          Value: profesor@example.com
+      MessageAction: SUPPRESS
+
+  JefaturaUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: jefatura@example.com
+      UserAttributes:
+        - Name: email
+          Value: jefatura@example.com
+      MessageAction: SUPPRESS
+
+  AdministradorUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: admin@example.com
+      UserAttributes:
+        - Name: email
+          Value: admin@example.com
+      MessageAction: SUPPRESS
+
+  # User to Group Attachments
+  ProfesorUserToGroup:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: !Ref ProfesorUser
+      GroupName: !Ref ProfesoresGroup
+
+  JefaturaUserToGroup:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: !Ref JefaturaUser
+      GroupName: !Ref JefaturaGroup
+
+  AdministradorUserToGroup:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    Properties:
+      UserPoolId: !Ref GuardiasUserPool
+      Username: !Ref AdministradorUser
+      GroupName: !Ref AdministradoresGroup
+
+  # Lambda Functions
+  TeachersFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: app-guardias-teachers
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
+      Runtime: nodejs20.x
+      Handler: teachers/index.handler
+      Code:
+        S3Bucket: !Ref CodeBucket
+        S3Key: !Ref TeachersZipKey
+
+  GuardScheduleFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: app-guardias-profesores-guardia
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
+      Runtime: nodejs20.x
+      Handler: profesores-guardia/index.handler
+      Code:
+        S3Bucket: !Ref CodeBucket
+        S3Key: !Ref GuardScheduleZipKey
+
+  AbsencesFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: app-guardias-ausencias-profesores
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
+      Runtime: nodejs20.x
+      Handler: ausencias-profesores/index.handler
+      Code:
+        S3Bucket: !Ref CodeBucket
+        S3Key: !Ref AbsencesZipKey
+
+  # API Gateway REST API
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: app-guardias-lambda-api
+      EndpointConfiguration:
+        Types: [REGIONAL]
+
+  # Cognito Authorizer
+  CognitoAuthorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      RestApiId: !Ref RestApi
+      Name: CognitoAuthorizer
+      Type: COGNITO_USER_POOLS
+      IdentitySource: method.request.header.Authorization
+      ProviderARNs:
+        - !GetAtt GuardiasUserPool.Arn
+
+  # API Resources
+  ApiResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: api
+
+  TeachersResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !Ref ApiResource
+      PathPart: teachers
+
+  GuardScheduleResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !Ref ApiResource
+      PathPart: profesores-guardia
+
+  AbsencesResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !Ref ApiResource
+      PathPart: ausencias-profesores
+
+  # Methods with Cognito Authorization
+  TeachersGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref TeachersResource
+      HttpMethod: GET
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref CognitoAuthorizer
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${TeachersFunction.Arn}/invocations"
+
+  GuardScheduleGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref GuardScheduleResource
+      HttpMethod: GET
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref CognitoAuthorizer
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GuardScheduleFunction.Arn}/invocations"
+
+  AbsencesGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref AbsencesResource
+      HttpMethod: GET
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref CognitoAuthorizer
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AbsencesFunction.Arn}/invocations"
+
+  # CORS OPTIONS Methods
+  ApiOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref ApiResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: '{ "statusCode": 200 }'
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+            ResponseTemplates:
+              application/json: "{}"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+
+  TeachersOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref TeachersResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: '{ "statusCode": 200 }'
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+            ResponseTemplates:
+              application/json: "{}"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+
+  GuardScheduleOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref GuardScheduleResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: '{ "statusCode": 200 }'
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+            ResponseTemplates:
+              application/json: "{}"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+
+  AbsencesOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref AbsencesResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: '{ "statusCode": 200 }'
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+            ResponseTemplates:
+              application/json: "{}"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+
+  # Lambda Permissions
+  TeachersInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref TeachersFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/GET/api/teachers"
+
+  GuardScheduleInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref GuardScheduleFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/GET/api/profesores-guardia"
+
+  AbsencesInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref AbsencesFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/GET/api/ausencias-profesores"
+
+  # API Deployment
+  ApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - ApiOptions
+      - TeachersOptions
+      - GuardScheduleOptions
+      - AbsencesOptions
+      - TeachersGet
+      - GuardScheduleGet
+      - AbsencesGet
+    Properties:
+      RestApiId: !Ref RestApi
+
+  ApiStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId: !Ref RestApi
+      DeploymentId: !Ref ApiDeployment
+      StageName: !Ref StageName
+
+Outputs:
+  # API Gateway Outputs
+  BaseUrl:
+    Value: !Sub "https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}"
+  TeachersUrl:
+    Value: !Sub "https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/api/teachers"
+  GuardScheduleUrl:
+    Value: !Sub "https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/api/profesores-guardia"
+  AbsencesUrl:
+    Value: !Sub "https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/api/ausencias-profesores"
+
+  # Cognito Outputs
+  UserPoolId:
+    Description: ID del User Pool de Cognito
+    Value: !Ref GuardiasUserPool
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolId"
+  
+  UserPoolClientId:
+    Description: ID del Client del User Pool
+    Value: !Ref GuardiasUserPoolClient
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolClientId"
+  
+  UserPoolArn:
+    Description: ARN del User Pool
+    Value: !GetAtt GuardiasUserPool.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-UserPoolArn"
+
+  HostedUIURL:
+    Description: URL de la página de inicio de sesión
+    Value: !Sub "https://${GuardiasUserPoolDomain}.auth.${AWS::Region}.amazoncognito.com/login?client_id=${GuardiasUserPoolClient}&response_type=code&scope=email+openid+profile&redirect_uri=http://localhost:5173"
