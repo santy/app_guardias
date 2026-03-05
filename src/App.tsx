@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import GuardSchedule from './components/GuardSchedule'
 import TeacherGuards from './components/TeacherGuards'
+import ReportAbsence from './components/ReportAbsence'
 import { networkMonitor } from './utils/networkMonitor'
 import { authService } from './services/authService'
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'schedule' | 'teachers'>('schedule')
+  const [activeTab, setActiveTab] = useState<'schedule' | 'teachers' | 'report'>('schedule')
   const [showStats, setShowStats] = useState(false)
   const [stats, setStats] = useState(networkMonitor.getStats())
   const [user, setUser] = useState(authService.getUser())
@@ -56,7 +57,7 @@ function App() {
     <div className="app">
       <div className="sidebar">
         <span className="user-info">
-          {user?.email || 'Desconocido'} ({user?.groups?.join(', ') || 'Sin grupo'}) | <button onClick={handleLogout} className="logout-btn">Salir</button>
+          {user?.displayName || user?.email || 'Desconocido'} - {user?.email} ({user?.groups?.join(', ') || 'Sin grupo'}) | <button onClick={handleLogout} className="logout-btn">Salir</button>
         </span>
       </div>
       <div className="main-content">
@@ -74,6 +75,12 @@ function App() {
               onClick={() => setActiveTab('teachers')}
             >
               Profesores de Guardia
+            </button>
+            <button 
+              className={`tab ${activeTab === 'report' ? 'active' : ''}`}
+              onClick={() => setActiveTab('report')}
+            >
+              Reportar Ausencia
             </button>
             <button 
               className="debug-btn"
@@ -101,6 +108,7 @@ function App() {
         <main className="app-main">
           {activeTab === 'schedule' && <GuardSchedule />}
           {activeTab === 'teachers' && <TeacherGuards />}
+          {activeTab === 'report' && <ReportAbsence />}
         </main>
       </div>
     </div>

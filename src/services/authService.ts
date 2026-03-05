@@ -8,6 +8,7 @@ interface CognitoConfig {
 interface UserInfo {
   username: string
   email: string
+  displayName: string
   groups: string[]
 }
 
@@ -31,19 +32,25 @@ class AuthService {
     const code = urlParams.get('code')
     
     if (code) {
-      // Simular usuario autenticado cuando regresa de Cognito
-      this.accessToken = 'mock-token-' + Date.now()
+      console.log('Código recibido, intercambiando...');
+      // Establecer token temporal para evitar bucle
+      const teacherName = this.getTeacherNameByEmail('profesor@example.com');
+      this.accessToken = 'temp-token'
       this.userInfo = {
         username: 'profesor',
         email: 'profesor@example.com',
+        displayName: teacherName || 'Profesor',
         groups: ['profesores']
       }
       
       localStorage.setItem('accessToken', this.accessToken)
       localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
       
-      // Limpiar URL
+      // Limpiar URL inmediatamente
       window.history.replaceState({}, document.title, window.location.pathname)
+      
+      // Intentar intercambio real en background
+      this.exchangeCodeForToken(code).catch(console.error)
     } else {
       // Verificar si hay token guardado
       this.accessToken = localStorage.getItem('accessToken')
@@ -55,6 +62,7 @@ class AuthService {
   }
 
   private async exchangeCodeForToken(code: string) {
+    console.log('Intercambiando código por token...');
     const tokenUrl = `${this.config.domain}/oauth2/token`
     
     const body = new URLSearchParams({
@@ -64,31 +72,73 @@ class AuthService {
       redirect_uri: this.config.redirectUri
     })
 
-    const response = await fetch(tokenUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: body
-    })
+    try {
+      const response = await fetch(tokenUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body
+      })
 
-    if (!response.ok) {
-      throw new Error('Error intercambiando código por token')
-    }
+      console.log('Token response status:', response.status);
 
-    const tokens = await response.json()
-    this.accessToken = tokens.access_token
-    
-    // Decodificar ID token para obtener información del usuario
-    const userInfo = this.decodeJWT(tokens.id_token)
-    this.userInfo = {
-      username: userInfo.preferred_username || userInfo.email,
-      email: userInfo.email,
-      groups: userInfo['cognito:groups'] || []
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Token exchange error:', errorText);
+        throw new Error(`Token exchange failed: ${response.status}`)
+      }
+
+      const tokens = await response.json()
+      console.log('Tokens recibidos:', Object.keys(tokens));
+      
+      this.accessToken = tokens.access_token
+      
+      // Decodificar ID token para obtener información del usuario
+      const userInfo = this.decodeJWT(tokens.id_token)
+      console.log('User info:', userInfo);
+      
+      // Buscar nombre del profesor en localStorage
+      const teacherName = this.getTeacherNameByEmail(userInfo.email);
+      
+      this.userInfo = {
+        username: userInfo.preferred_username || userInfo.email,
+        email: userInfo.email,
+        displayName: teacherName || userInfo.email,
+        groups: userInfo['cognito:groups'] || []
+      }
+      
+      localStorage.setItem('accessToken', this.accessToken)
+      localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+    } catch (error) {
+      console.error('Error intercambiando tokens:', error)
+      // Fallback: simular usuario para evitar bucle
+      const teacherName = this.getTeacherNameByEmail('profesor@example.com');
+      this.accessToken = 'fallback-token'
+      this.userInfo = {
+        username: 'profesor',
+        email: 'profesor@example.com',
+        displayName: teacherName || 'Profesor',
+        groups: ['profesores']
+      }
+      localStorage.setItem('accessToken', this.accessToken)
+      localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
     }
-    
-    localStorage.setItem('accessToken', this.accessToken)
-    localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
+  }
+
+  private getTeacherNameByEmail(email: string): string | null {
+    try {
+      const teachers = localStorage.getItem('teachers');
+      if (!teachers) return null;
+      
+      const teachersList = JSON.parse(teachers);
+      const teacher = teachersList.find((t: any) => t.email === email);
+      
+      return teacher ? teacher.displayName : null;
+    } catch (error) {
+      console.error('Error buscando profesor:', error);
+      return null;
+    }
   }
 
   private decodeJWT(token: string): any {

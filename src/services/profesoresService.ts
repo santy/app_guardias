@@ -1,6 +1,7 @@
 import { getApiUrl } from '../config/api'
 import { cacheService } from './cacheService'
 import { teachersService } from './teachersService'
+import { authService } from './authService'
 
 const CACHE_KEYS = {
   PROFESORES_GUARDIA: 'profesores_guardia'
@@ -75,8 +76,15 @@ export const profesoresService = {
     }
 
     try {
+      const token = authService.getToken();
+      const headers: HeadersInit = {};
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const [plantillaResponse, teachers] = await Promise.all([
-        fetch(`${getApiUrl()}/api/profesores-guardia`),
+        fetch(`${getApiUrl()}/api/profesores-guardia`, { headers }),
         teachersService.getTeachers()
       ]);
       
@@ -119,8 +127,16 @@ export const profesoresService = {
     try {
       const currentWeekRange = getWeekRange(weekDate || new Date().toISOString().split('T')[0]);
       const encodedWeekRange = encodeURIComponent(currentWeekRange);
+      
+      const token = authService.getToken();
+      const headers: HeadersInit = {};
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const [ausenciasResponse, teachers] = await Promise.all([
-        fetch(`${getApiUrl()}/api/ausencias-profesores?week=${encodedWeekRange}`),
+        fetch(`${getApiUrl()}/api/ausencias-profesores?week=${encodedWeekRange}`, { headers }),
         teachersService.getTeachers()
       ]);
       

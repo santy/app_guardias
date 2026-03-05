@@ -1,4 +1,5 @@
 import { getApiUrl } from '../config/api'
+import { authService } from './authService'
 
 interface Teacher {
   PK: string
@@ -22,7 +23,9 @@ export const teachersService = {
     
     teachersPromise = (async () => {
       try {
+        // Temporalmente sin autenticación hasta resolver CORS
         const response = await fetch(`${getApiUrl()}/api/teachers`);
+        
         if (!response.ok) {
           throw new Error('Error al obtener los profesores');
         }
