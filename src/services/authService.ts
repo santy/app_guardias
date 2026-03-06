@@ -10,6 +10,7 @@ interface UserInfo {
   email: string
   displayName: string
   groups: string[]
+  teacherId?: string
 }
 
 class AuthService {
@@ -116,16 +117,12 @@ class AuthService {
       // Buscar nombre del profesor en localStorage
       const teacherName = this.getTeacherNameByEmail(userInfo.email);
       
-      // Obtener teacherId desde /api/teachers (ahora que tenemos el token)
-      const teacherId = await this.getTeacherIdByEmail(userInfo.email);
-      console.log('TeacherId obtenido:', teacherId);
-      
       this.userInfo = {
         username: userInfo.preferred_username || userInfo.email,
         email: userInfo.email,
         displayName: teacherName || userInfo.email,
         groups: userInfo['cognito:groups'] || [],
-        teacherId: teacherId
+        teacherId: userInfo.sub  // UUID de Cognito
       }
       
       localStorage.setItem('accessToken', this.accessToken)
@@ -138,7 +135,8 @@ class AuthService {
         username: 'profesor',
         email: 'profesor@example.com',
         displayName: 'Profesor',
-        groups: ['profesores']
+        groups: ['profesores'],
+        teacherId: 'fallback-uuid'
       }
       localStorage.setItem('accessToken', this.accessToken)
       localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
@@ -158,46 +156,6 @@ class AuthService {
       console.error('Error buscando profesor:', error);
       return null;
     }
-  }
-
-  private async getTeacherIdByEmail(email: string): Promise<string | null> {
-    console.log('🔍 Buscando teacherId para email:', email);
-    try {
-      const { getApiUrl } = await import('../config/api');
-      console.log('📡 Haciendo petición a /api/teachers...');
-      
-      const response = await fetch(`${getApiUrl()}/api/teachers`, {
-        headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      console.log('📡 Respuesta /api/teachers status:', response.status);
-      
-      if (response.ok) {
-        const teachers = await response.json();
-        console.log('👥 Teachers obtenidos:', teachers.length, 'profesores');
-        console.log('👥 Primer profesor:', teachers[0]);
-        
-        const teacher = teachers.find((t: any) => t.email === email);
-        console.log('🎯 Profesor encontrado:', teacher);
-        
-        if (teacher) {
-          // Extraer ID del campo PK (formato: "TEACHER#T001" -> "T001")
-          const teacherId = teacher.PK ? teacher.PK.replace('TEACHER#', '') : teacher.id;
-          console.log('🆔 TeacherId extraído:', teacherId);
-          return teacherId;
-        }
-        
-        return null;
-      } else {
-        console.error('❌ Error en petición teachers:', response.status);
-      }
-    } catch (error) {
-      console.error('❌ Error obteniendo teacherId:', error);
-    }
-    return null;
   }
 
   private decodeJWT(token: string): any {

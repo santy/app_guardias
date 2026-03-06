@@ -1,11 +1,16 @@
+import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { unmarshall } from '@aws-sdk/util-dynamodb';
+
+const dynamoClient = new DynamoDBClient({ region: 'us-east-1' });
+
 export const handler = async (event) => {
   try {
-    const teachers = [
-      { PK: "TEACHER#T001", displayName: "Ana López", email: "ana.lopez@example.com", active: true },
-      { PK: "TEACHER#T002", displayName: "Carlos Pérez", email: "carlos.perez@example.com", active: true },
-      { PK: "TEACHER#T003", displayName: "María García", email: "maria.garcia@example.com", active: true },
-      { PK: "TEACHER#T004", displayName: "Juan Martín", email: "juan.martin@example.com", active: true }
-    ];
+    const scanCommand = new ScanCommand({
+      TableName: 'guardias-teachers'
+    });
+
+    const response = await dynamoClient.send(scanCommand);
+    const teachers = response.Items?.map(item => unmarshall(item)) || [];
 
     return {
       statusCode: 200,

@@ -20,7 +20,7 @@ interface AusenciaRecord {
 
 const getDayFromDate = (dateString: string): string => {
   const date = new Date(dateString)
-  const days = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
+  const days = ['DOMINGO', 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO']
   return days[date.getDay()]
 }
 

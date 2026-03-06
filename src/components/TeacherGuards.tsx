@@ -19,7 +19,7 @@ const TeacherGuards = () => {
   const [error, setError] = useState<string | null>(null)
   const [lastUpdate, setLastUpdate] = useState<string>('')
 
-  const days = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES']
+  const days = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES']
   const hours = ['1', '2', '3', '4', '5', '6']
   const hourLabels = ['8:30-9:20', '9:25-10:25', '10:30-11:20', '11:25-12:15', '12:40-13:30', '13:35-14:25']
 

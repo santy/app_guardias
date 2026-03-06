@@ -3,12 +3,13 @@ import './App.css'
 import GuardSchedule from './components/GuardSchedule'
 import TeacherGuards from './components/TeacherGuards'
 import ReportAbsence from './components/ReportAbsence'
+import UserManagement from './components/UserManagement'
 import { networkMonitor } from './utils/networkMonitor'
 import { authService } from './services/authService'
 import { teachersService } from './services/teachersService'
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'schedule' | 'teachers' | 'report'>('schedule')
+  const [activeTab, setActiveTab] = useState<'schedule' | 'teachers' | 'report' | 'users'>('schedule')
   const [showStats, setShowStats] = useState(false)
   const [stats, setStats] = useState(networkMonitor.getStats())
   const [user, setUser] = useState(authService.getUser())
@@ -83,6 +84,14 @@ function App() {
             >
               Reportar Ausencia
             </button>
+            {user?.groups?.includes('administradores') && (
+              <button 
+                className={`tab ${activeTab === 'users' ? 'active' : ''}`}
+                onClick={() => setActiveTab('users')}
+              >
+                Gestión Usuarios
+              </button>
+            )}
             <button 
               className="debug-btn"
               onClick={() => setShowStats(!showStats)}
@@ -110,6 +119,7 @@ function App() {
           {activeTab === 'schedule' && <GuardSchedule />}
           {activeTab === 'teachers' && <TeacherGuards />}
           {activeTab === 'report' && <ReportAbsence />}
+          {activeTab === 'users' && <UserManagement />}
         </main>
       </div>
     </div>

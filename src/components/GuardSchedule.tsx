@@ -42,7 +42,7 @@ const GuardSchedule = () => {
 
   const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
   const hours = ['8:30-9:20', '9:25-10:25', '10:30-11:20', '11:25-12:15', '12:40-13:30', '13:35-14:25']
-  const dayKeys = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES']
+  const dayKeys = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES']
   const hourKeys = ['1', '2', '3', '4', '5', '6']
 
   useEffect(() => {
