@@ -157,12 +157,18 @@ const GuardSchedule = () => {
     
     const guards = profesoresData[dayKey]?.[hourKey] || []
     const absentTeachers = ausenciasData[weekKey]?.[dayKey]?.[hourKey] || []
+    const unassignedAbsent = absentTeachers.filter(t => !t.asignada)
     
     let classes = 'schedule-cell clickable'
     
-    if (guards.length === 0 || absentTeachers.length > 0) {
+    if (unassignedAbsent.length > 0) {
+      // ROJO: Hay ausencias sin cubrir (prioridad máxima)
       classes += ' needs-guard'
+    } else if (guards.length === 0 && absentTeachers.length === 0) {
+      // AMARILLO: No hay profesores de guardia pero tampoco ausencias
+      classes += ' no-guard-no-absent'
     } else {
+      // VERDE: No hay ausencias o todas están cubiertas
       classes += ' has-guard'
     }
     

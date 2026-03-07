@@ -1,3 +1,6 @@
+import { useState } from 'react'
+import { authService } from '../services/authService'
+
 interface Profesor {
   nombre: string
   guardias: number
@@ -25,11 +28,34 @@ interface GuardModalProps {
 }
 
 const GuardModal = ({ guardSlot, onClose }: GuardModalProps) => {
+  const [selectedAbsentTeacher, setSelectedAbsentTeacher] = useState<string>('')
+  const user = authService.getUser()
+  const currentTeacherName = user?.displayName || user?.email || 'Usuario'
+
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose()
     }
   }
+
+  const handleTakeGuard = () => {
+    if (!selectedAbsentTeacher) {
+      alert('Selecciona un profesor ausente para cubrir')
+      return
+    }
+    
+    console.log('Asignando guardia:', {
+      day: guardSlot.day,
+      hour: guardSlot.hour,
+      profesorAsignado: currentTeacherName,
+      profesorAusente: selectedAbsentTeacher
+    })
+    
+    alert(`Has tomado la guardia para cubrir a ${selectedAbsentTeacher}`)
+    onClose()
+  }
+
+  const unassignedTeachers = guardSlot.absentTeachers.filter(t => !t.asignada)
 
   return (
     <div className="modal-overlay" onClick={handleOverlayClick}>
@@ -130,6 +156,55 @@ const GuardModal = ({ guardSlot, onClose }: GuardModalProps) => {
                 </div>
               ))}
             </p>
+          </div>
+        )}
+
+        {unassignedTeachers.length > 0 && (
+          <div style={{ 
+            background: '#e6fffa', 
+            padding: '1rem', 
+            borderRadius: '8px', 
+            marginTop: '1rem',
+            border: '1px solid #38a169'
+          }}>
+            <h4 style={{ margin: '0 0 1rem 0', color: '#2d3748' }}>Tomar Guardia</h4>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                Selecciona profesor a sustituir:
+              </label>
+              <select 
+                value={selectedAbsentTeacher} 
+                onChange={(e) => setSelectedAbsentTeacher(e.target.value)}
+                style={{ 
+                  width: '100%', 
+                  padding: '0.5rem', 
+                  borderRadius: '4px', 
+                  border: '1px solid #cbd5e0' 
+                }}
+              >
+                <option value="">-- Seleccionar profesor --</option>
+                {unassignedTeachers.map((teacher, index) => (
+                  <option key={index} value={teacher.nombre}>
+                    {teacher.nombre} {teacher.aula && `(Aula: ${teacher.aula})`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button 
+              onClick={handleTakeGuard}
+              disabled={!selectedAbsentTeacher}
+              style={{
+                backgroundColor: selectedAbsentTeacher ? '#38a169' : '#a0aec0',
+                color: 'white',
+                padding: '0.75rem 1.5rem',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: selectedAbsentTeacher ? 'pointer' : 'not-allowed',
+                fontWeight: 'bold'
+              }}
+            >
+              Tomar Guardia como {currentTeacherName}
+            </button>
           </div>
         )}
 
