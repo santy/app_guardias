@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { authService } from '../services/authService'
+import { guardiasService } from '../services/guardiasService'
 
 interface Profesor {
   nombre: string
@@ -7,6 +8,7 @@ interface Profesor {
 }
 
 interface AusenteProfessor {
+  id: string
   nombre: string
   aula?: string
   comentarios?: string
@@ -25,10 +27,12 @@ interface GuardSlot {
 interface GuardModalProps {
   guardSlot: GuardSlot
   onClose: () => void
+  onGuardTaken?: () => void
 }
 
-const GuardModal = ({ guardSlot, onClose }: GuardModalProps) => {
+const GuardModal = ({ guardSlot, onClose, onGuardTaken }: GuardModalProps) => {
   const [selectedAbsentTeacher, setSelectedAbsentTeacher] = useState<string>('')
+  const [loading, setLoading] = useState(false)
   const user = authService.getUser()
   const currentTeacherName = user?.displayName || user?.email || 'Usuario'
 
@@ -38,21 +42,40 @@ const GuardModal = ({ guardSlot, onClose }: GuardModalProps) => {
     }
   }
 
-  const handleTakeGuard = () => {
+  const handleTakeGuard = async () => {
     if (!selectedAbsentTeacher) {
       alert('Selecciona un profesor ausente para cubrir')
       return
     }
     
-    console.log('Asignando guardia:', {
-      day: guardSlot.day,
-      hour: guardSlot.hour,
-      profesorAsignado: currentTeacherName,
-      profesorAusente: selectedAbsentTeacher
-    })
-    
-    alert(`Has tomado la guardia para cubrir a ${selectedAbsentTeacher}`)
-    onClose()
+    setLoading(true)
+    try {
+      await guardiasService.asignarGuardia({
+        day: guardSlot.day,
+        hour: guardSlot.hour,
+        profesorAusente: selectedAbsentTeacher,
+        profesorAsignado: user?.teacherId || currentTeacherName
+      })
+      
+      const selectedTeacher = unassignedTeachers.find(t => t.id === selectedAbsentTeacher)
+      alert(`Has tomado la guardia para cubrir a ${selectedTeacher?.nombre || selectedAbsentTeacher}`)
+      
+      // Cerrar modal primero
+      onClose()
+      
+      // Luego recargar datos (sin bloquear el cierre del modal)
+      try {
+        onGuardTaken?.()
+      } catch (reloadError) {
+        console.warn('Error al recargar datos:', reloadError)
+      }
+      
+    } catch (error) {
+      console.error('Error al asignar guardia:', error)
+      alert('Error al asignar la guardia. Inténtalo de nuevo.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const unassignedTeachers = guardSlot.absentTeachers.filter(t => !t.asignada)
@@ -184,7 +207,7 @@ const GuardModal = ({ guardSlot, onClose }: GuardModalProps) => {
               >
                 <option value="">-- Seleccionar profesor --</option>
                 {unassignedTeachers.map((teacher, index) => (
-                  <option key={index} value={teacher.nombre}>
+                  <option key={index} value={teacher.id}>
                     {teacher.nombre} {teacher.aula && `(Aula: ${teacher.aula})`}
                   </option>
                 ))}
@@ -192,18 +215,18 @@ const GuardModal = ({ guardSlot, onClose }: GuardModalProps) => {
             </div>
             <button 
               onClick={handleTakeGuard}
-              disabled={!selectedAbsentTeacher}
+              disabled={!selectedAbsentTeacher || loading}
               style={{
-                backgroundColor: selectedAbsentTeacher ? '#38a169' : '#a0aec0',
+                backgroundColor: (!selectedAbsentTeacher || loading) ? '#a0aec0' : '#38a169',
                 color: 'white',
                 padding: '0.75rem 1.5rem',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: selectedAbsentTeacher ? 'pointer' : 'not-allowed',
+                cursor: (!selectedAbsentTeacher || loading) ? 'not-allowed' : 'pointer',
                 fontWeight: 'bold'
               }}
             >
-              Tomar Guardia como {currentTeacherName}
+              {loading ? 'Asignando...' : `Tomar Guardia como ${currentTeacherName}`}
             </button>
           </div>
         )}

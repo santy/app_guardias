@@ -35,6 +35,11 @@ Parameters:
     Default: gestion-usuarios.zip
     Description: "S3 key del ZIP de gestion-usuarios"
 
+  AsignarGuardiaZipKey:
+    Type: String
+    Default: asignar-guardia.zip
+    Description: "S3 key del ZIP de asignar-guardia"
+
 Resources:
   # DynamoDB Tables
   TeachersTable:
@@ -323,6 +328,20 @@ Resources:
         S3Bucket: !Ref CodeBucket
         S3Key: !Ref UserManagementZipKey
 
+  AsignarGuardiaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: app-guardias-asignar-guardia
+      Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/LabRole"
+      Runtime: nodejs20.x
+      Handler: asignar-guardia/index.handler
+      Environment:
+        Variables:
+          VERSION: "1.0"
+      Code:
+        S3Bucket: !Ref CodeBucket
+        S3Key: !Ref AsignarGuardiaZipKey
+
   # API Gateway REST API
   RestApi:
     Type: AWS::ApiGateway::RestApi
@@ -384,6 +403,13 @@ Resources:
       RestApiId: !Ref RestApi
       ParentId: !Ref ApiResource
       PathPart: users
+
+  AsignarGuardiaResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref RestApi
+      ParentId: !Ref ApiResource
+      PathPart: asignar-guardia
 
   UsersUsernameResource:
     Type: AWS::ApiGateway::Resource
@@ -507,6 +533,45 @@ Resources:
           ResponseParameters:
             method.response.header.Access-Control-Allow-Origin: true
 
+  AsignarGuardiaPost:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref AsignarGuardiaResource
+      HttpMethod: POST
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref CognitoAuthorizer
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AsignarGuardiaFunction.Arn}/invocations"
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          - StatusCode: 400
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          - StatusCode: 404
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          - StatusCode: 500
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+        - StatusCode: 400
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+        - StatusCode: 404
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+        - StatusCode: 500
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+
   UsersGet:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -607,6 +672,25 @@ Resources:
             method.response.header.Access-Control-Allow-Origin: true
             method.response.header.Access-Control-Allow-Headers: true
             method.response.header.Access-Control-Allow-Methods: true
+
+  AsignarGuardiaOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref RestApi
+      ResourceId: !Ref AsignarGuardiaResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AsignarGuardiaFunction.Arn}/invocations"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+
   ApiOptions:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -820,7 +904,15 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/DELETE/api/users/*"
 
-  # API Deployment
+  AsignarGuardiaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref AsignarGuardiaFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/*/api/asignar-guardia"
+
+  # API Deployment - Updated for asignar-guardia fix
   ApiDeployment:
     Type: AWS::ApiGateway::Deployment
     DependsOn:
@@ -829,12 +921,14 @@ Resources:
       - GuardScheduleOptions
       - AbsencesOptions
       - ReportAbsenceOptions
+      - AsignarGuardiaOptions
       - UsersOptions
       - UsersUsernameOptions
       - TeachersGet
       - GuardScheduleGet
       - AbsencesGet
       - ReportAbsencePost
+      - AsignarGuardiaPost
       - UsersGet
       - UsersPost
       - UsersDelete

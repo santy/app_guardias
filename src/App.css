@@ -201,9 +201,7 @@
 }
 
 .schedule-cell.clickable:hover {
-  background: #e6fffa;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
 }
 
 .schedule-cell.has-guard {
@@ -212,11 +210,12 @@
 }
 
 .schedule-cell.needs-guard {
-  background: #fed7d7;
+  background: #eb5c5c;
+  color: white;
   border-left: 4px solid #e53e3e;
 }
 .schedule-cell.no-guard-no-absent {
-  background: #fef5e7;
+  background: #f0e37c;
   border-left: 4px solid #f6ad55;
 }
 .modal-overlay {
@@ -299,7 +298,7 @@
 }
 
 .absent-list li {
-  background: #fed7d7;
+  background: #eb5c5c;
   border-left-color: #e53e3e;
 }
 
@@ -929,4 +928,17 @@
 .group-unknown {
   background: #e2e3e5;
   color: #383d41;
+}
+
+.schedule-cell.no-absences {
+  background: #22c55e;
+  color: white;
+  border-left: 4px solid #16a34a;
+}
+
+
+.schedule-spacer {
+  grid-column: 1 / -1;
+  height: 10px;
+  background: #718096;
 }

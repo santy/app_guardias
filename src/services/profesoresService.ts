@@ -57,6 +57,7 @@ const transformAusenciasData = (ausenciasArray: AusenciaRecord[]) => {
     if (!result[weekStart][day][slot]) result[weekStart][day][slot] = []
     
     result[weekStart][day][slot].push({
+      id: record.SK.replace('TEACHER#', ''), // Añadir el ID del profesor
       nombre: teacherName,
       aula: record.aula,
       comentarios: record.comentarios,
@@ -136,7 +137,7 @@ export const profesoresService = {
       }
 
       const [ausenciasResponse, teachers] = await Promise.all([
-        fetch(`${getApiUrl()}/api/ausencias-profesores?week=${encodedWeekRange}`, { headers }),
+        fetch(`${getApiUrl()}/api/ausencias-profesores?week=${encodedWeekRange}&_t=${Date.now()}`, { headers }),
         teachersService.getTeachers()
       ]);
       
@@ -150,8 +151,7 @@ export const profesoresService = {
       // Agregar nombres de profesores a los datos
       const dataWithNames = rawData.map((ausencia: any) => {
         const teacherId = ausencia.SK.replace('TEACHER#', '');
-        const profesorAsignadoId = ausencia.profesorAsignado ? 
-          ausencia.profesorAsignado.replace('TEACHER#', '') : null;
+        const profesorAsignadoId = ausencia.profesorAsignadoId || null;
         
         return {
           ...ausencia,

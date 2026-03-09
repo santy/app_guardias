@@ -76,6 +76,28 @@ const GuardSchedule = () => {
     loadAusencias()
   }, [currentWeekOffset])
 
+  const loadData = async () => {
+    setLoading(true)
+    try {
+      // Recargar ausencias
+      const weekKey = getWeekDateKey(currentWeekOffset)
+      const ausencias = await profesoresService.getAusenciasProfesores(weekKey)
+      const { _lastUpdate, ...ausenciasClean } = ausencias
+      setAusenciasData(ausenciasClean)
+      setLastUpdateAusencias(_lastUpdate || '')
+
+      // Recargar profesores de guardia
+      const data = await profesoresService.getProfesoresGuardia()
+      const { _lastUpdate: lastUpdateProf, ...dataClean } = data
+      setProfesoresData(dataClean)
+      setLastUpdate(lastUpdateProf || '')
+    } catch (err) {
+      console.error('Error loading data:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // Función para obtener las fechas de la semana
   const getWeekDates = (weekOffset: number) => {
     const today = new Date()
@@ -125,6 +147,11 @@ const GuardSchedule = () => {
     
     if (dayIndex === -1 || hourIndex === -1) return
     
+    // Obtener la fecha específica para este día
+    const weekDates = getWeekDates(currentWeekOffset)
+    const specificDate = weekDates[dayIndex]
+    const dateString = specificDate.toISOString().split('T')[0] // YYYY-MM-DD
+    
     const dayKey = dayKeys[dayIndex]
     const hourKey = hourKeys[hourIndex]
     const weekKey = getWeekDateKey(currentWeekOffset)
@@ -133,11 +160,12 @@ const GuardSchedule = () => {
     const absentTeachers = ausenciasData[weekKey]?.[dayKey]?.[hourKey] || []
     
     console.log('WeekKey:', weekKey, 'DayKey:', dayKey, 'HourKey:', hourKey)
+    console.log('Fecha específica:', dateString)
     console.log('Ausencias para esta hora:', absentTeachers)
     
     const guardData: GuardSlot = {
-      day,
-      hour,
+      day: dateString, // Fecha específica: 2024-03-07
+      hour: hourKeys[hourIndex], // Número de slot: "1", "2", etc.
       guards,
       absentTeachers,
       needsGuard: guards.length === 0 || absentTeachers.length > 0
@@ -167,8 +195,11 @@ const GuardSchedule = () => {
     } else if (guards.length === 0 && absentTeachers.length === 0) {
       // AMARILLO: No hay profesores de guardia pero tampoco ausencias
       classes += ' no-guard-no-absent'
+    } else if (absentTeachers.length === 0) {
+      // VERDE FUERTE: No hay ausencias en absoluto
+      classes += " no-absences"
     } else {
-      // VERDE: No hay ausencias o todas están cubiertas
+      // VERDE: Hay ausencias pero están cubiertas
       classes += ' has-guard'
     }
     
@@ -216,18 +247,39 @@ const GuardSchedule = () => {
         })}
         
         {/* Time slots */}
-        {hours.map(hour => (
+        {hours.map((hour, hourIndex) => (
           <>
-            <div key={`time-${hour}`} className="schedule-cell time">{hour}</div>
+            <div key={`time-${hour}`} className={`schedule-cell time`}>{hour}</div>
             {days.map(day => (
               <div
                 key={`${day}-${hour}`}
-                className={getCellClass(day, hour)}
+                className={`${getCellClass(day, hour)}`}
                 onClick={() => handleCellClick(day, hour)}
               >
-                <span>Ver guardias</span>
+                <span>{(() => { 
+                  const dayIndex = days.indexOf(day); 
+                  const hourIndex = hours.indexOf(hour); 
+                  const dayKey = dayKeys[dayIndex]; 
+                  const hourKey = hourKeys[hourIndex]; 
+                  const weekKey = getWeekDateKey(currentWeekOffset);
+                  const absentTeachers = ausenciasData[weekKey]?.[dayKey]?.[hourKey] || []; 
+                  const guards = profesoresData[dayKey]?.[hourKey] || [];
+                  const absentCount = absentTeachers.length; 
+                  const guardCount = guards.length;
+                  const absentText = absentCount === 1 ? "1 ausencia" : `${absentCount} ausencias`;
+                  const guardText = guardCount === 1 ? "1 prof. guardia" : `${guardCount} prof. guardia`;
+                  return (
+                    <div>
+                      <div>{absentText}</div>
+                      <div style={{fontSize: '0.8em', opacity: 0.8}}>{guardText}</div>
+                    </div>
+                  );
+                })()}</span>
               </div>
             ))}
+            {(hourIndex === 1 || hourIndex === 3) && (
+              <div key={`spacer-${hourIndex}`} className="schedule-spacer"></div>
+            )}
           </>
         ))}
       </div>
@@ -236,6 +288,10 @@ const GuardSchedule = () => {
         <GuardModal
           guardSlot={selectedSlot}
           onClose={() => setSelectedSlot(null)}
+          onGuardTaken={() => {
+            // Recargar datos después de asignar guardia
+            loadData()
+          }}
         />
       )}
       
