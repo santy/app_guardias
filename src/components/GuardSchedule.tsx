@@ -19,7 +19,6 @@ interface ProfesoresData {
   [day: string]: {
     [hour: string]: Profesor[]
   }
-  _lastUpdate?: string
 }
 
 interface AusenciasData {
@@ -28,7 +27,6 @@ interface AusenciasData {
       [hour: string]: string[]
     }
   }
-  _lastUpdate?: string
 }
 
 const GuardSchedule = () => {
@@ -37,7 +35,6 @@ const GuardSchedule = () => {
   const [profesoresData, setProfesoresData] = useState<ProfesoresData>({})
   const [ausenciasData, setAusenciasData] = useState<AusenciasData>({})
   const [loading, setLoading] = useState(true)
-  const [lastUpdate, setLastUpdate] = useState<string>('')
   const [lastUpdateAusencias, setLastUpdateAusencias] = useState<string>('')
 
   const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
@@ -51,7 +48,6 @@ const GuardSchedule = () => {
         const profesores = await profesoresService.getProfesoresGuardia()
         const { _lastUpdate: profesoresUpdate, ...profesoresClean } = profesores
         setProfesoresData(profesoresClean)
-        setLastUpdate(profesoresUpdate || '')
       } catch (err) {
         console.error('Error loading profesores:', err)
       }
@@ -90,7 +86,6 @@ const GuardSchedule = () => {
       const data = await profesoresService.getProfesoresGuardia()
       const { _lastUpdate: lastUpdateProf, ...dataClean } = data
       setProfesoresData(dataClean)
-      setLastUpdate(lastUpdateProf || '')
     } catch (err) {
       console.error('Error loading data:', err)
     } finally {
@@ -185,7 +180,7 @@ const GuardSchedule = () => {
     
     const guards = profesoresData[dayKey]?.[hourKey] || []
     const absentTeachers = ausenciasData[weekKey]?.[dayKey]?.[hourKey] || []
-    const unassignedAbsent = absentTeachers.filter(t => !t.asignada)
+    const unassignedAbsent = absentTeachers.filter((t: any) => !t.asignada)
     
     let classes = 'schedule-cell clickable'
     

@@ -73,7 +73,9 @@ export const profesoresService = {
   async getProfesoresGuardia() {
     const cached = cacheService.get(CACHE_KEYS.PROFESORES_GUARDIA);
     if (cached) {
-      return { ...cached.data, _lastUpdate: cached.lastUpdate };
+      return cached.data && typeof cached.data === 'object' 
+        ? { ...cached.data, _lastUpdate: cached.lastUpdate }
+        : cached.data;
     }
 
     try {

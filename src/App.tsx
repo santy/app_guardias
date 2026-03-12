@@ -6,7 +6,7 @@ import ReportAbsence from './components/ReportAbsence'
 import UserManagement from './components/UserManagement'
 import { networkMonitor } from './utils/networkMonitor'
 import { authService } from './services/authService'
-import { teachersService } from './services/teachersService'
+
 
 function App() {
   const [activeTab, setActiveTab] = useState<'schedule' | 'teachers' | 'report' | 'users'>('schedule')

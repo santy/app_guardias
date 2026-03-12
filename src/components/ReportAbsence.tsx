@@ -41,7 +41,7 @@ export default function ReportAbsence() {
       }
 
       // Enviar a la API real
-      const response = await api.post('/api/reportar-ausencia', absenceData)
+      await api.post('/api/reportar-ausencia', absenceData)
       
       setMessage(`Ausencia reportada correctamente:
       📅 Fecha: ${form.fecha?.toLocaleDateString('es-ES')}
@@ -75,7 +75,7 @@ export default function ReportAbsence() {
             <label htmlFor="fecha">Fecha:</label>
             <DatePicker
               selected={form.fecha}
-              onChange={(date) => setForm({ ...form, fecha: date })}
+              onChange={(date: Date | null) => setForm({ ...form, fecha: date })}
               filterDate={(date) => {
                 const day = date.getDay()
                 return day !== 0 && day !== 6 // Excluir domingos (0) y sábados (6)

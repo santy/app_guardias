@@ -10,7 +10,6 @@ interface ProfesoresData {
   [day: string]: {
     [hour: string]: Profesor[]
   }
-  _lastUpdate?: string
 }
 
 const TeacherGuards = () => {

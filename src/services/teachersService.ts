@@ -1,5 +1,4 @@
 import { getApiUrl } from '../config/api'
-import { authService } from './authService'
 
 interface Teacher {
   PK: string

@@ -47,7 +47,9 @@ class AuthService {
       this.exchangeCodeForToken(code).then(() => {
         console.log('Intercambio exitoso, token real obtenido:', this.accessToken)
         // Guardar token real
-        localStorage.setItem('accessToken', this.accessToken)
+        if (this.accessToken) {
+          localStorage.setItem('accessToken', this.accessToken)
+        }
         localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
         // Recargar para usar el token correcto
         window.location.reload()
@@ -125,7 +127,9 @@ class AuthService {
         teacherId: userInfo.sub  // UUID de Cognito
       }
       
-      localStorage.setItem('accessToken', this.accessToken)
+      if (this.accessToken) {
+        localStorage.setItem('accessToken', this.accessToken)
+      }
       localStorage.setItem('userInfo', JSON.stringify(this.userInfo))
     } catch (error) {
       console.error('Error intercambiando tokens:', error)
